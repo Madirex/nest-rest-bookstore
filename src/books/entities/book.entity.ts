@@ -2,16 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Category } from '../../categories/entities/category.entity'
 
 /**
  * Entity Book
  */
 @Entity('books')
 export class Book {
-  private static IMAGE_DEFAULT: 'https://www.madirex.com/favicon.ico'
+  static IMAGE_DEFAULT: 'https://www.madirex.com/favicon.ico'
 
   @PrimaryGeneratedColumn()
   id: number
@@ -25,8 +28,9 @@ export class Book {
   @Column({ name: 'publisher', type: 'varchar', length: 255 })
   publisher: string //TODO: hacer relación
 
-  @Column({ name: 'category', type: 'varchar', length: 255 })
-  category: string //TODO: hacer relación
+  @ManyToOne(() => Category, (category) => category.books)
+  @JoinColumn({ name: 'category_id' })
+  category: Category
 
   @Column({ type: 'text', default: Book.IMAGE_DEFAULT })
   image: string
