@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { BooksModule } from './books/books.module'
+import { CategoriesModule } from './categories/categories.module'
+import { CacheModule } from '@nestjs/cache-manager'
+import { NotificationsModule } from './websockets/notifications/notifications.module'
+import { StorageModule } from './storage/storage.module'
 
 /**
  * Módulo principal de la aplicación
  */
 @Module({
   imports: [
+    CategoriesModule,
+    BooksModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -17,7 +23,9 @@ import { BooksModule } from './books/books.module'
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
       synchronize: true,
     }),
-    BooksModule,
+    StorageModule,
+    NotificationsModule,
+    CacheModule.register(),
   ],
   controllers: [],
   providers: [],
