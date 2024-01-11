@@ -13,7 +13,6 @@ import { Book } from '../entities/book.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Category } from '../../categories/entities/category.entity'
 import { Repository } from 'typeorm'
-import { isUUID } from 'class-validator'
 import { StorageService } from '../../storage/storage.service'
 import { Request } from 'express'
 import { BooksNotificationsGateway } from '../../websockets/notifications/books-notifications.gateway'
@@ -97,7 +96,7 @@ export class BooksService {
     }
 
     const isNumeric = !isNaN(Number(id))
-    if (!id || isNumeric || !isUUID(id)) {
+    if (!id || !isNumeric) {
       throw new BadRequestException('ID no válido')
     }
     const book = await this.bookRepository.findOne({
@@ -147,6 +146,8 @@ export class BooksService {
     const dto = this.bookMapper.mapEntityToResponseDto(book)
     this.onChange(NotificationType.CREATE, dto)
 
+    book.publisher = 'no implementado todavía' //TODO: implementar relación con publisher
+
     const res = await this.bookRepository.save({
       ...book,
     })
@@ -188,7 +189,7 @@ export class BooksService {
 
     const isNumeric = !isNaN(Number(id))
 
-    if (!id || isNumeric || !isUUID(id)) {
+    if (!id || !isNumeric) {
       throw new BadRequestException('ID no válido')
     }
 
@@ -257,7 +258,7 @@ export class BooksService {
   async remove(@Param('id') id: number): Promise<ResponseBookDto> {
     this.logger.log(`Eliminando Book con id: ${id}`)
     const isNumeric = !isNaN(Number(id))
-    if (!id || isNumeric || !isUUID(id)) {
+    if (!id || !isNumeric) {
       throw new BadRequestException('ID no válido')
     }
     await this.findOne(id)

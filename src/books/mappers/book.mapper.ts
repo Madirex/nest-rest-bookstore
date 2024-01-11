@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { Book } from '../entities/book.entity'
 import { CreateBookDto } from '../dto/create-book.dto'
-import { v4 as uuidv4 } from 'uuid'
 import { plainToClass } from 'class-transformer'
-import { Category } from '../../categories/entities/category.entity'
 import { UpdateBookDto } from '../dto/update-book.dto'
 import { ResponseBookDto } from '../dto/response-book.dto'
+import { Category } from '../../categories/entities/category.entity'
 
 /**
  * Mapper de Books
@@ -19,7 +18,6 @@ export class BookMapper {
    */
   toEntity(createBookDto: CreateBookDto, category: Category): Book {
     const bookEntity = plainToClass(Book, createBookDto)
-    bookEntity.id = uuidv4()
     bookEntity.createdAt = new Date()
     bookEntity.updatedAt = new Date()
     bookEntity.name = createBookDto.name.trim()
