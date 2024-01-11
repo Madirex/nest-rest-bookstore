@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { BooksModule } from './books/books.module';
+import { BooksModule } from './books/books.module'
 
 /**
  * Módulo principal de la aplicación
@@ -13,7 +13,7 @@ import { BooksModule } from './books/books.module';
       port: 5432,
       username: 'admin',
       password: 'password123',
-      database: 'FUNKOS_DB',
+      database: 'BOOKSTORE_DB',
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
       synchronize: true,
     }),
