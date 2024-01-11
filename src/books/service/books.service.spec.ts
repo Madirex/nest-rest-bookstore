@@ -65,7 +65,7 @@ describe('BooksService', () => {
       isActive: true,
       books: [],
     },
-    image: 'https://www.madirex.com/favicon.ico',
+    image: 'empty.png',
     description: 'Descripción Ejemplo',
     price: 19.99,
     stock: 10,
@@ -79,7 +79,7 @@ describe('BooksService', () => {
     author: 'Autor Ejemplo',
     publisherId: 1,
     category: 'test',
-    image: 'https://www.madirex.com/favicon.ico',
+    image: 'empty.png',
     description: 'Descripción Ejemplo',
     price: 19.99,
     stock: 10,
@@ -91,7 +91,7 @@ describe('BooksService', () => {
     author: 'Autor Ejemplo',
     publisherId: 1,
     category: 'test',
-    image: 'https://www.madirex.com/favicon.ico',
+    image: 'empty.png',
     description: 'Descripción Ejemplo',
     price: 19.99,
     stock: 10,
@@ -412,12 +412,11 @@ describe('BooksService', () => {
           uuidv4(),
           mockFile as any,
           mockRequest as any,
-          true,
+          false,
         ),
       ).toEqual(mockResponseBookResponse)
 
       expect(storageService.removeFile).toHaveBeenCalled()
-      expect(storageService.getFileNameWithoutUrl).toHaveBeenCalled()
     })
   })
 })

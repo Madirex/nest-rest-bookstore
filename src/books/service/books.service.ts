@@ -325,7 +325,7 @@ export class BooksService {
     id: number,
     file: Express.Multer.File,
     req: Request,
-    withUrl: boolean = true,
+    withUrl: boolean = false,
   ) {
     this.logger.log(`Actualizando imagen Book por id: ${id}`)
     await this.findOne(id)

@@ -151,6 +151,6 @@ export class BooksController {
         `El tamaño del archivo no puede ser mayor a ${maxFileSizeInBytes} bytes.`,
       )
     }
-    return await this.booksService.updateImage(id, file, req, true)
+    return await this.booksService.updateImage(id, file, req, false)
   }
 }

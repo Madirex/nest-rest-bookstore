@@ -44,7 +44,7 @@ describe('BooksController', () => {
     author: 'Autor Ejemplo',
     publisherId: 1,
     category: 'test',
-    image: 'https://www.madirex.com/favicon.ico',
+    image: 'empty.png',
     description: 'Descripción Ejemplo',
     price: 19.99,
     stock: 10,

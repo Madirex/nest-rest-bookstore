@@ -14,7 +14,7 @@ import { Category } from '../../categories/entities/category.entity'
  */
 @Entity('books')
 export class Book {
-  static IMAGE_DEFAULT = 'https://www.madirex.com/favicon.ico'
+  static IMAGE_DEFAULT = 'empty.png'
 
   @PrimaryGeneratedColumn()
   id: number

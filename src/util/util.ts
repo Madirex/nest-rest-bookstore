@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { BadRequestException } from '@nestjs/common'
+import { ResponseBookDto } from '../books/dto/response-book.dto'
 
 /**
  * Clase Util
@@ -57,6 +58,36 @@ export class Util {
       }
     } catch (error) {
       throw new BadRequestException('Error al leer el contenido del archivo.')
+    }
+  }
+
+  /**
+   * Agrega el path a la imagen
+   * @param responseBookDto DTO de respuesta de Book
+   * @private Método privado
+   */
+  static responseBookDtoAddPath(responseBookDto: ResponseBookDto) {
+    const apiVersion = process.env.API_VERSION
+      ? `/${process.env.API_VERSION}`
+      : '/v1'
+    const apiPort = process.env.API_PORT ? `${process.env.API_PORT}` : '3000'
+    const apiHost = process.env.API_HOST
+      ? `${process.env.API_HOST}`
+      : 'localhost'
+
+    const isHttps = process.env.API_HTTPS ? process.env.API_HTTPS : false
+    let protocol = 'http'
+
+    if (isHttps) {
+      protocol = 'https'
+    }
+
+    if (
+      responseBookDto &&
+      responseBookDto.image != null &&
+      responseBookDto.image != ''
+    ) {
+      responseBookDto.image = `${protocol}://${apiHost}:${apiPort}${apiVersion}/storage/${responseBookDto.image}`
     }
   }
 }

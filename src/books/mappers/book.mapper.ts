@@ -5,6 +5,7 @@ import { plainToClass } from 'class-transformer'
 import { UpdateBookDto } from '../dto/update-book.dto'
 import { ResponseBookDto } from '../dto/response-book.dto'
 import { Category } from '../../categories/entities/category.entity'
+import { Util } from '../../util/util'
 
 /**
  * Mapper de Books
@@ -62,6 +63,7 @@ export class BookMapper {
     if (entity && entity.category && 'name' in entity.category) {
       responseBookDto.category = entity.category.name
     }
+    Util.responseBookDtoAddPath(responseBookDto) //agregarle el path a la imagen
     return responseBookDto
   }
 }

@@ -4,7 +4,6 @@ import {
   Get,
   Logger,
   Param,
-  Req,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -13,7 +12,7 @@ import { StorageService } from './storage.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { Util } from '../util/util'
 
 /**
@@ -55,26 +54,19 @@ export class StorageController {
       },
     }),
   )
-  storeFile(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+  storeFile(@UploadedFile() file: Express.Multer.File) {
     this.logger.log(`Subiendo archivo:  ${file}`)
 
     if (!file) {
       throw new BadRequestException('Fichero no encontrado.')
     }
-
-    const apiVersion = process.env.API_VERSION
-      ? `/${process.env.API_VERSION}`
-      : '/v1'
-    const url = `${req.protocol}://${req.get('host')}${apiVersion}/storage/${
-      file.filename
-    }`
     return {
       originalname: file.originalname,
       filename: file.filename,
       size: file.size,
       mimetype: file.mimetype,
       path: file.path,
-      url: url,
+      url: '',
     }
   }
 
