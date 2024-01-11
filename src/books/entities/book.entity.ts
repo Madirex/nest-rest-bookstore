@@ -14,7 +14,7 @@ import { Category } from '../../categories/entities/category.entity'
  */
 @Entity('books')
 export class Book {
-  static IMAGE_DEFAULT: 'https://www.madirex.com/favicon.ico'
+  static IMAGE_DEFAULT = 'https://www.madirex.com/favicon.ico'
 
   @PrimaryGeneratedColumn()
   id: number
@@ -35,7 +35,7 @@ export class Book {
   @Column({ type: 'text', default: Book.IMAGE_DEFAULT })
   image: string
 
-  @Column({ name: 'description', type: 'varchar', length: 255 })
+  @Column({ name: 'description', type: 'varchar', length: 255, default: '' })
   description: string
 
   @Column({ type: 'double precision', default: 0.0 })
