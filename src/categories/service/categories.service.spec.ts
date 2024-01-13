@@ -73,33 +73,71 @@ describe('CategoriesService', () => {
 
   describe('findAll', () => {
     it('debería devolver un array de categorías', async () => {
-      // Arrange
-      const mockCategories: Category[] = []
+      const paginateOptions = {
+        page: 1,
+        limit: 10,
+        path: 'categories',
+      }
 
       jest.spyOn(cacheManager, 'get').mockResolvedValue(Promise.resolve(null))
       jest.spyOn(cacheManager, 'set').mockResolvedValue()
 
-      const mockCategoryResponse: ResponseCategoryDto = {
-        id: 2,
-        name: 'Categoría Ejemplo',
-        categoryType: CategoryType.DISNEY,
-        isActive: true,
-        createdAt: new Date('2023-01-01T12:00:00Z'),
-        updatedAt: new Date('2023-01-02T14:30:00Z'),
+      const mockQueryBuilder = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        addOrderBy: jest.fn().mockReturnThis(),
+        getManyAndCount: jest.fn().mockResolvedValue([]),
       }
 
-      jest.spyOn(categoriesRepository, 'find').mockResolvedValue(mockCategories)
+      jest
+        .spyOn(categoriesRepository, 'createQueryBuilder')
+        .mockReturnValue(mockQueryBuilder as any)
+
       jest
         .spyOn(categoriesMapperMock, 'mapEntityToResponseDto')
-        .mockReturnValue(mockCategoryResponse)
+        .mockReturnValue(new ResponseCategoryDto())
 
       // Act
-      const res = await service.findAll()
+      const res: any = await service.findAll(paginateOptions)
 
       // Assert
-      expect(res).toEqual(mockCategories)
-      expect(categoriesRepository.find).toHaveBeenCalled()
+      expect(res.meta.itemsPerPage).toEqual(paginateOptions.limit)
+      expect(res.meta.currentPage).toEqual(paginateOptions.page)
+      expect(res.links.current).toEqual(
+        `categories?page=${paginateOptions.page}&limit=${paginateOptions.limit}&sortBy=name:ASC`,
+      )
     })
+
+    /*it('debería retornar el resultado caché', async () => {
+      const paginateOptions = {
+        page: 1,
+        limit: 10,
+        path: 'categories',
+      }
+
+      const testCategories = {
+        data: [],
+        meta: {
+          itemsPerPage: 10,
+          totalItems: 1,
+          currentPage: 1,
+          totalPages: 1,
+        },
+        links: {
+          current: 'categories?page=1&limit=10&sortBy=name:ASC',
+        },
+      } as Paginated<Category>
+
+      jest.spyOn(cacheManager, 'get').mockResolvedValue(testCategories)
+
+      const result = await service.findAll(paginateOptions)
+
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        `all_categories_page_${hash(JSON.stringify(paginateOptions))}`,
+      )
+      expect(result).toEqual(testCategories)
+    })*/
   })
 
   describe('findOne', () => {

@@ -23,6 +23,14 @@ import {
 import { ResponseBookDto } from '../dto/response-book.dto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import {
+  FilterOperator,
+  FilterSuffix,
+  paginate,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate'
+import { hash } from 'typeorm/util/StringUtils'
 
 /**
  * Servicio de Books
@@ -53,29 +61,57 @@ export class BooksService {
 
   /**
    * Obtiene todos los Books
+   * @param query Query de paginación
    * @returns Arreglo con todos los Books
    */
-  async findAll() {
+  async findAll(query: PaginateQuery) {
     this.logger.log('Obteniendo todos los Books')
 
     // check cache
-    const cache = await this.cacheManager.get(`all_books`)
+    const cache = await this.cacheManager.get(
+      `all_books_page_${hash(JSON.stringify(query))}`,
+    )
     if (cache) {
       this.logger.log('Cache hit')
       return cache
     }
 
-    const books = await this.bookRepository.find({
-      relations: ['category'],
-    })
+    const queryBuilder = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.category', 'category')
 
-    const res = books.map((book) =>
-      this.bookMapper.mapEntityToResponseDto(book),
+    let pagination: Paginated<Book>
+    try {
+      pagination = await paginate(query, queryBuilder, {
+        sortableColumns: ['name', 'category', 'price', 'stock'],
+        defaultSortBy: [['name', 'ASC']],
+        searchableColumns: ['name', 'category', 'price', 'stock'],
+        filterableColumns: {
+          name: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+          category: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+          price: true,
+          stock: true,
+          isActive: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+        },
+      })
+    } catch (error) {
+      throw new BadRequestException(error.message)
+    }
+
+    const res = {
+      data: (pagination.data ?? []).map((book) =>
+        this.bookMapper.mapEntityToResponseDto(book),
+      ),
+      meta: pagination.meta,
+      links: pagination.links,
+    }
+
+    // Guardamos en caché
+    await this.cacheManager.set(
+      `all_books_page_${hash(JSON.stringify(query))}`,
+      res,
+      60,
     )
-
-    // Se guarda en caché
-    await this.cacheManager.set(`all_books`, res, 60)
-
     return res
   }
 

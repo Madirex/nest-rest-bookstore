@@ -23,6 +23,7 @@ import { extname } from 'path'
 import { Request } from 'express'
 import { Util } from '../../util/util'
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager'
+import { Paginate, PaginateQuery } from 'nestjs-paginate'
 
 /**
  * Controlador de Books
@@ -40,6 +41,7 @@ export class BooksController {
 
   /**
    * Obtiene todos los Books
+   * @param query Query de paginación
    * @returns Arreglo con todos los Books
    * @example http://localhost:3000/v1/books
    */
@@ -47,9 +49,9 @@ export class BooksController {
   @CacheKey('all_books')
   @CacheTTL(30)
   @HttpCode(200)
-  async findAll() {
+  async findAll(@Paginate() query: PaginateQuery) {
     this.logger.log('Obteniendo todos los Books')
-    return await this.booksService.findAll()
+    return await this.booksService.findAll(query)
   }
 
   /**

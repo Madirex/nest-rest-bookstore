@@ -7,6 +7,7 @@ import { UpdateBookDto } from '../dto/update-book.dto'
 import { Request } from 'express'
 import { CacheModule } from '@nestjs/cache-manager'
 import { ResponseBookDto } from '../dto/response-book.dto'
+import { Paginated } from 'nestjs-paginate'
 
 describe('BooksController', () => {
   let controller: BooksController
@@ -67,11 +68,34 @@ describe('BooksController', () => {
 
   describe('findAll', () => {
     it('debería retornar todos los Books', async () => {
-      const testBooks: ResponseBookDto[] = [mockResult]
+      const paginateOptions = {
+        page: 1,
+        limit: 10,
+        path: 'books',
+      }
+
+      const testBooks = {
+        data: [],
+        meta: {
+          itemsPerPage: 10,
+          totalItems: 1,
+          currentPage: 1,
+          totalPages: 1,
+        },
+        links: {
+          current: 'books?page=1&limit=10&sortBy=name:ASC',
+        },
+      } as Paginated<ResponseBookDto>
 
       jest.spyOn(service, 'findAll').mockResolvedValue(testBooks)
+      const result: any = await controller.findAll(paginateOptions)
 
-      expect(await controller.findAll()).toEqual(testBooks)
+      expect(result.meta.itemsPerPage).toEqual(paginateOptions.limit)
+      expect(result.meta.currentPage).toEqual(paginateOptions.page)
+      expect(result.meta.totalPages).toEqual(1)
+      expect(result.links.current).toEqual(
+        `books?page=${paginateOptions.page}&limit=${paginateOptions.limit}&sortBy=name:ASC`,
+      )
       expect(service.findAll).toHaveBeenCalled()
     })
   })

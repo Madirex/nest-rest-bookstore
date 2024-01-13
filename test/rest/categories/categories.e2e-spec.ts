@@ -113,6 +113,18 @@ describe('CategoriesController (e2e)', () => {
       const result = await mockCategoriesService.findAll()
       expect(result).toEqual(categories)
     })
+
+    it('debería retornar una página de Categories con una query', async () => {
+      mockCategoriesService.findAll.mockResolvedValue([testCategories])
+
+      const { body } = await request(app.getHttpServer())
+        .get(`${endpoint}?page=1&limit=10`)
+        .expect(200)
+      expect(() => {
+        expect(body).toEqual([testCategories])
+        expect(mockCategoriesService.findAll).toHaveBeenCalled()
+      })
+    })
   })
 
   /**

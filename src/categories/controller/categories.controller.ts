@@ -14,6 +14,7 @@ import { CategoriesService } from '../service/categories.service'
 import { CreateCategoryDto } from '../dto/create-category.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager'
+import { Paginate, PaginateQuery } from 'nestjs-paginate'
 
 /**
  * Controlador de categorías
@@ -31,6 +32,7 @@ export class CategoriesController {
 
   /**
    * Obtiene todas las categorías
+   * @param query Query de paginación
    * @returns Arreglo con todas las categorías
    * @example http://localhost:3000/v1/categories
    */
@@ -38,9 +40,9 @@ export class CategoriesController {
   @CacheKey('all_categories')
   @CacheTTL(30)
   @HttpCode(200)
-  async findAll() {
+  async findAll(@Paginate() query: PaginateQuery) {
     this.logger.log('Obteniendo todas las categorías')
-    return await this.categoriesService.findAll()
+    return await this.categoriesService.findAll(query)
   }
 
   /**

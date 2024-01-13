@@ -19,6 +19,13 @@ import { ResponseCategoryDto } from '../dto/response-category.dto'
 import { CategoriesNotificationsGateway } from '../../websockets/notifications/categories-notifications.gateway'
 import { Cache } from 'cache-manager'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import {
+  FilterOperator,
+  FilterSuffix,
+  paginate,
+  PaginateQuery,
+} from 'nestjs-paginate'
+import { hash } from 'typeorm/util/StringUtils'
 
 /**
  * Servicio de categorías
@@ -44,26 +51,37 @@ export class CategoriesService {
 
   /**
    * Obtener todas las categorías
+   * @param query Query de paginación
    * @returns Arreglo con todas las categorías
    */
-  async findAll() {
+  async findAll(query: PaginateQuery) {
     this.logger.log('Obteniendo todas las categorías')
 
     // check cache
-    const cache = await this.cacheManager.get(`all_categories`)
+    const cache = await this.cacheManager.get(
+      `all_categories_page_${hash(JSON.stringify(query))}`,
+    )
     if (cache) {
       this.logger.log('Cache hit')
       return cache
     }
 
-    const categories = await this.categoriesRepository.find()
-
-    const res = categories.map((category) =>
-      this.categoriesMapper.mapEntityToResponseDto(category),
-    )
+    const res = await paginate(query, this.categoriesRepository, {
+      sortableColumns: ['categoryType', 'name', 'createdAt', 'updatedAt'],
+      defaultSortBy: [['name', 'ASC']],
+      searchableColumns: ['categoryType', 'name', 'createdAt', 'updatedAt'],
+      filterableColumns: {
+        name: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+        isActive: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+      },
+    })
 
     // Se guarda en caché
-    await this.cacheManager.set(`all_categories`, res, 60)
+    await this.cacheManager.set(
+      `all_categories_page_${hash(JSON.stringify(query))}`,
+      res,
+      60,
+    )
 
     return res
   }
