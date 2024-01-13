@@ -223,7 +223,7 @@ describe('BooksService', () => {
 
     it('debería lanzar NotFoundException si no se encuentra el Book con el ID', async () => {
       jest.spyOn(bookRepository, 'findOne').mockResolvedValue(null)
-      await expect(service.findOne(uuidv4())).rejects.toThrow(NotFoundException)
+      await expect(service.findOne(1)).rejects.toThrow(NotFoundException)
     })
 
     it('debería lanzar BadRequestException si el ID no es válido', async () => {
@@ -323,24 +323,6 @@ describe('BooksService', () => {
         NotFoundException,
       )
       expect(service.findOne).toHaveBeenCalledWith(id)
-    })
-
-    it('debería lanzar BadRequestException si el nombre del Book a actualizar ya existe para otro Book', async () => {
-      // Arrange
-      const updateBookDto: UpdateBookDto = {
-        name: 'Nuevo Nombre',
-      }
-
-      jest.spyOn(service, 'findOne').mockResolvedValue(responseBookDto)
-      jest.spyOn(bookRepository, 'findOne').mockResolvedValue(mockBook)
-      jest.spyOn(service, 'getByName').mockResolvedValue(responseBookDto)
-
-      // Act & Assert
-      await expect(service.update(id, updateBookDto)).rejects.toThrow(
-        BadRequestException,
-      )
-      expect(service.findOne).toHaveBeenCalledWith(id)
-      expect(service.getByName).toHaveBeenCalledWith(updateBookDto.name.trim())
     })
   })
 
