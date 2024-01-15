@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
+import { config } from 'dotenv'
 
 /*
  * Función principal de la aplicación
@@ -34,4 +35,6 @@ async function bootstrap() {
 
   console.log(banner)
 }
+
+config()
 bootstrap()
