@@ -6,6 +6,7 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { NotificationsModule } from './websockets/notifications/notifications.module'
 import { StorageModule } from './storage/storage.module'
 import { ClientModule } from './client/client.module'
+import { ShopModule } from './shop/shop.module';
 
 /**
  * Módulo principal de la aplicación
@@ -28,6 +29,7 @@ import { ClientModule } from './client/client.module'
     NotificationsModule,
     CacheModule.register(),
     ClientModule,
+    ShopModule,
   ],
   controllers: [],
 })
