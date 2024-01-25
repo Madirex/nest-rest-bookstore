@@ -1,5 +1,5 @@
 import { Address } from 'src/common/address.entity'
-export class GetShopDto {
+export class ResponseShopDto {
   id: string
   name: string
   address: Address

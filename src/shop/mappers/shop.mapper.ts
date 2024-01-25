@@ -1,39 +1,68 @@
 import { Injectable } from '@nestjs/common'
 import { Shop } from '../entities/shop.entity'
 import { CreateShopDto } from '../dto/create-shop.dto'
-import { UpdateShopDto } from '../dto/update-shop.dto'
-import { GetShopDto } from '../dto/response-shop.dto'
 import { plainToClass } from 'class-transformer'
+import { UpdateShopDto } from '../dto/update-shop.dto'
+import { ResponseShopDto } from '../dto/response-shop.dto'
 import { Book } from '../../books/entities/book.entity'
 import { Client } from '../../client/entities/client.entity'
 
+/**
+ * Mapper de Shops
+ */
 @Injectable()
 export class ShopMapper {
-  toEntity(createShopDto: CreateShopDto): Shop {
+  /**
+   * Mapea un DTO de creación de Shop a una entidad de Shop
+   * @param createShopDto DTO de creación de Shop
+   * @param books Lista de entidades Book relacionadas
+   * @param clients Lista de entidades Client relacionadas
+   */
+  toEntity(
+    createShopDto: CreateShopDto,
+    books: Book[],
+    clients: Client[],
+  ): Shop {
     const shopEntity = plainToClass(Shop, createShopDto)
     shopEntity.createdAt = new Date()
     shopEntity.updatedAt = new Date()
+    shopEntity.name = createShopDto.name.trim()
+    shopEntity.books = books
+    shopEntity.clients = clients
     return shopEntity
   }
 
-  updateToEntity(updateShopDto: UpdateShopDto, entity: Shop): Shop {
-    if (updateShopDto.name) {
-      entity.name = updateShopDto.name
-    }
-    if (updateShopDto.address) {
-      entity.address = updateShopDto.address
-    }
-    entity.updatedAt = new Date()
-    return entity
+  /**
+   * Mapea un DTO de actualización de Shop a una entidad de Shop
+   * @param dto DTO de actualización de Shop
+   * @param entity Entidad de Shop
+   * @param books Lista de entidades Book relacionadas
+   * @param clients Lista de entidades Client relacionadas
+   */
+  mapUpdateToEntity(
+    dto: UpdateShopDto,
+    entity: Shop,
+    books: Book[],
+    clients: Client[],
+  ): Shop {
+    const shop = new Shop()
+    shop.id = entity.id
+    shop.createdAt = entity.createdAt
+    shop.updatedAt = new Date()
+    shop.name = dto.name ? dto.name.trim() : entity.name
+    shop.books = books || entity.books
+    shop.clients = clients || entity.clients
+    return shop
   }
 
-  toDto(entity: Shop): GetShopDto {
-    const dto = plainToClass(GetShopDto, entity)
-    return dto
+  /**
+   * Mapea una entidad de Shop a un DTO de respuesta
+   * @param entity Entidad de Shop
+   */
+  mapEntityToResponseDto(entity: Shop): ResponseShopDto {
+    const responseShopDto = plainToClass(ResponseShopDto, entity)
+    responseShopDto.booksId = entity.books.map((book) => book.id)
+    responseShopDto.clientsId = entity.clients.map((client) => client.id)
+    return responseShopDto
   }
-
-  mapShopListToDtoList(shops: Shop[]): GetShopDto[] {
-    return shops.map((shop) => this.toDto(shop))
-  }
-
 }

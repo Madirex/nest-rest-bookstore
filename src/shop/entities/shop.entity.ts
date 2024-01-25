@@ -2,13 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  // OneToMany, // Comentado ya que las relaciones están comentadas
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { Address } from '../../common/address.entity'
-//import { Book } from '../../books/entities/book.entity';
-//import { Client } from '../../client/entities/client.entity';
+import { Book } from '../../books/entities/book.entity'
+import { Client } from '../../client/entities/client.entity'
 
 @Entity('shops')
 export class Shop {
@@ -36,11 +36,9 @@ export class Shop {
   })
   updatedAt: Date
 
-  /*
   @OneToMany(() => Book, (book) => book.shop)
-  books: Book[];
+  books: Book[]
 
   @OneToMany(() => Client, (client) => client.shop)
-  clients: Client[];
-  */
+  clients: Client[]
 }
