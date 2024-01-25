@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Address } from '../../common/address.entity'
 //import { Book } from '../../books/entities/book.entity';
 //import { Client } from '../../client/entities/client.entity';
 
@@ -18,7 +19,7 @@ export class Shop {
   name: string
 
   @Column({ name: 'address', type: 'varchar', length: 255 })
-  address: string
+  address: Address
 
   @CreateDateColumn({
     name: 'created_at',
