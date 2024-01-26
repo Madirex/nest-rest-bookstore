@@ -35,4 +35,5 @@ import { ClientModule } from './client/client.module'
 /**
  * Módulo principal de la aplicación
  */
-export class AppModule {}
+export class AppModule {
+}
