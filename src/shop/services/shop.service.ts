@@ -13,7 +13,7 @@ import { validate as validateUUID } from 'uuid'
 import { ShopMapper } from '../mappers/shop.mapper'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { ShopsNotificationsGateway } from '../websockets/notifications/shops-notifications.gateway'
+import { ShopsNotificationsGateway } from '../../websockets/notifications/shop-notification.gateway'
 import {
   NotificationType,
   WsNotification,
