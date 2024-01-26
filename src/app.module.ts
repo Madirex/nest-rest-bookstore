@@ -5,6 +5,7 @@ import { CategoriesModule } from './categories/categories.module'
 import { CacheModule } from '@nestjs/cache-manager'
 import { NotificationsModule } from './websockets/notifications/notifications.module'
 import { StorageModule } from './storage/storage.module'
+import { ClientModule } from './client/client.module'
 
 /**
  * Módulo principal de la aplicación
@@ -26,9 +27,9 @@ import { StorageModule } from './storage/storage.module'
     StorageModule,
     NotificationsModule,
     CacheModule.register(),
+    ClientModule,
   ],
   controllers: [],
-  providers: [],
 })
 
 /**

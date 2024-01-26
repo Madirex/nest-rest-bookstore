@@ -3,6 +3,20 @@
   <img src="https://i.imgur.com/Om8sJgU.jpeg?maxwidth=500"/>
 </p>
 
+## Configuración
+Hay que crear un archivo .env en la raíz del proyecto con las siguientes variables de entorno:
+```API_VERSION=v1
+API_PORT=3000
+API_HOST=localhost
+https=true
+
+# Postgres
+DATABASE_USER=admin
+DATABASE_PASSWORD=password123
+POSTGRES_DATABASE=BOOKSTORE_DB
+POSTGRES_PORT=5432
+```
+
 ## Arquitectura
 <p align="center">
   <img src="https://i.imgur.com/4r1PwDf_d.webp?maxwidth=1000"/>
