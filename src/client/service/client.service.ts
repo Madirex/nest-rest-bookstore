@@ -30,6 +30,7 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
+import { OrdersService } from '../../orders/services/orders.service'
 
 @Injectable()
 export class ClientService {
@@ -40,6 +41,7 @@ export class ClientService {
    * @param clientRepository
    * @param clientMapper
    * @param storageService
+   * @param ordersService
    * @param clientNotificationGateway
    * @param cacheManager
    */
@@ -48,6 +50,7 @@ export class ClientService {
     private readonly clientRepository: Repository<Client>,
     private readonly clientMapper: ClientMapper,
     private readonly storageService: StorageService,
+    private readonly ordersService: OrdersService,
     private readonly clientNotificationGateway: ClientNotificationsGateway,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -234,6 +237,12 @@ export class ClientService {
     if (!client) {
       this.logger.warn(`No se encontró el cliente con id: ${id}`)
       throw new NotFoundException(`No se encontró el cliente con id: ${id}`)
+    }
+
+    const hasOrders = await this.ordersService.clientExists(id)
+    if (hasOrders) {
+      this.logger.warn(`El cliente con id: ${id} tiene pedidos`)
+      throw new BadRequestException(`El cliente con id: ${id} tiene pedidos`)
     }
 
     this.logger.log(`Eliminando cliente con id: ${id}`)

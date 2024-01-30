@@ -80,5 +80,4 @@ export class ClientMapper {
     clientEntity.image = client.image ?? Client.IMAGE_DEFAULT
     return clientEntity
   }
-
 }

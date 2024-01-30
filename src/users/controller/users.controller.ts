@@ -14,11 +14,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { CacheInterceptor } from '@nestjs/cache-manager'
-import { Roles, RolesAuthGuard } from '../auth/guards/roles-auth.guard'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { IdValidatePipe } from '../pedidos/pipes/id-validate.pipe'
-import { CreatePedidoDto } from '../pedidos/dto/create-pedido.dto'
-import { UpdatePedidoDto } from '../pedidos/dto/update-pedido.dto'
+import { Roles, RolesAuthGuard } from '../../auth/guards/roles-auth.guard'
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
+import { IdValidatePipe } from '../../orders/pipes/id-validate.pipe'
+import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
+import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
 import { ApiExcludeController } from '@nestjs/swagger'
 import { UsersService } from '../services/users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
@@ -31,8 +31,7 @@ import { UpdateUserDto } from '../dto/update-user.dto'
 export class UsersController {
   private readonly logger = new Logger(UsersController.name)
 
-  constructor(private readonly usersService: UsersService) {
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @Roles('ADMIN')
@@ -43,7 +42,7 @@ export class UsersController {
 
   @Get(':id')
   @Roles('ADMIN')
-  async findOne(id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     this.logger.log(`findOne: ${id}`)
     return await this.usersService.findOne(id)
   }
@@ -88,12 +87,12 @@ export class UsersController {
     return await this.usersService.update(request.user.id, updateUserDto, false)
   }
 
-  @Get('me/pedidos')
+  @Get('me/orders')
   async getPedidos(@Req() request: any) {
     return await this.usersService.getPedidos(request.user.id)
   }
 
-  @Get('me/pedidos/:id')
+  @Get('me/orders/:id')
   async getPedido(
     @Req() request: any,
     @Param('id', IdValidatePipe) id: string,
@@ -101,11 +100,11 @@ export class UsersController {
     return await this.usersService.getPedido(request.user.id, id)
   }
 
-  @Post('me/pedidos')
+  @Post('me/orders')
   @HttpCode(201)
   @Roles('USER')
   async createPedido(
-    @Body() createPedidoDto: CreatePedidoDto,
+    @Body() createPedidoDto: CreateOrderDto,
     @Req() request: any,
   ) {
     this.logger.log(`Creando pedido ${JSON.stringify(createPedidoDto)}`)
@@ -115,11 +114,11 @@ export class UsersController {
     )
   }
 
-  @Put('me/pedidos/:id')
+  @Put('me/orders/:id')
   @Roles('USER')
   async updatePedido(
     @Param('id', IdValidatePipe) id: string,
-    @Body() updatePedidoDto: UpdatePedidoDto,
+    @Body() updatePedidoDto: UpdateOrderDto,
     @Req() request: any,
   ) {
     this.logger.log(
@@ -132,7 +131,7 @@ export class UsersController {
     )
   }
 
-  @Delete('me/pedidos/:id')
+  @Delete('me/orders/:id')
   @HttpCode(204)
   @Roles('USER')
   async removePedido(
