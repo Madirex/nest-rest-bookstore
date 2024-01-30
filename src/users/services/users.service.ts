@@ -1,4 +1,10 @@
-import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Usuario } from '../entities/user.entity'
@@ -7,9 +13,9 @@ import { CreateUserDto } from '../dto/create-user.dto'
 import { Role, UserRole } from '../entities/user-role.entity'
 import { BcryptService } from './bcrypt.service'
 import { UpdateUserDto } from '../dto/update-user.dto'
-import { PedidosService } from '../pedidos/pedidos.service'
-import { CreatePedidoDto } from '../pedidos/dto/create-pedido.dto'
-import { UpdatePedidoDto } from '../pedidos/dto/update-pedido.dto'
+import { OrdersService } from '../../orders/services/orders.service'
+import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
+import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
 
 @Injectable()
 export class UsersService {
@@ -20,11 +26,10 @@ export class UsersService {
     private readonly usuariosRepository: Repository<Usuario>,
     @InjectRepository(UserRole)
     private readonly userRoleRepository: Repository<UserRole>,
-    private readonly pedidosService: PedidosService,
+    private readonly pedidosService: OrdersService,
     private readonly usuariosMapper: UsuariosMapper,
     private readonly bcryptService: BcryptService,
-  ) {
-  }
+  ) {}
 
   async findAll() {
     this.logger.log('findAll')
@@ -35,9 +40,14 @@ export class UsersService {
 
   async findOne(id: number) {
     this.logger.log(`findOne: ${id}`)
-    return this.usuariosMapper.toResponseDto(
-      await this.usuariosRepository.findOneBy({ id }),
-    )
+
+    const user = await this.usuariosRepository.findOneBy({ id })
+
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`)
+    }
+
+    return this.usuariosMapper.toResponseDto(user)
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -150,14 +160,14 @@ export class UsersService {
   }
 
   async getPedidos(id: number) {
-    return await this.pedidosService.findByidUsuario(id)
+    return await this.pedidosService.findByIdUser(id)
   }
 
   async getPedido(idUser: number, idPedido: string) {
     const pedido = await this.pedidosService.findOne(idPedido)
-    console.log(pedido.idUsuario)
+    console.log(pedido.idUser)
     console.log(idUser)
-    if (pedido.idUsuario != idUser) {
+    if (pedido.idUser != idUser) {
       throw new ForbiddenException(
         'No tienes permiso para acceder a este recursos',
       )
@@ -165,9 +175,9 @@ export class UsersService {
     return pedido
   }
 
-  async createPedido(createPedidoDto: CreatePedidoDto, userId: number) {
+  async createPedido(createPedidoDto: CreateOrderDto, userId: number) {
     this.logger.log(`Creando pedido ${JSON.stringify(createPedidoDto)}`)
-    if (createPedidoDto.idUsuario != userId) {
+    if (createPedidoDto.idUser != userId) {
       throw new BadRequestException(
         'El id del IdUsuario debe ser el mismo que el del usuario autenticado',
       )
@@ -177,19 +187,19 @@ export class UsersService {
 
   async updatePedido(
     id: string,
-    updatePedidoDto: UpdatePedidoDto,
+    updatePedidoDto: UpdateOrderDto,
     userId: number,
   ) {
     this.logger.log(
       `Actualizando pedido con id ${id} y ${JSON.stringify(updatePedidoDto)}`,
     )
-    if (updatePedidoDto.idUsuario != userId) {
+    if (updatePedidoDto.idUser != userId) {
       throw new BadRequestException(
         'El id del IdUsuario debe ser el mismo que el del usuario autenticado.',
       )
     }
     const pedido = await this.pedidosService.findOne(id)
-    if (pedido.idUsuario != userId) {
+    if (pedido.idUser != userId) {
       throw new ForbiddenException(
         'No tienes permiso para acceder a este recursos',
       )
@@ -200,7 +210,7 @@ export class UsersService {
   async removePedido(idPedido: string, userId: number) {
     this.logger.log(`removePedido: ${idPedido}`)
     const pedido = await this.pedidosService.findOne(idPedido)
-    if (pedido.idUsuario != userId) {
+    if (pedido.idUser != userId) {
       throw new ForbiddenException(
         'No tienes permiso para acceder a este recursos',
       )

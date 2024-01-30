@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Book } from '../../books/entities/book.entity'
 import { Repository } from 'typeorm'
 import { Client } from '../../client/entities/client.entity'
+import { Usuario } from '../../users/entities/user.entity'
 
 export const OrdersOrderByValues: string[] = ['_id', 'idUsuario'] // Lo usamos en los pipes
 export const OrdersOrderValues: string[] = ['asc', 'desc'] // Lo usamos en los pipes
@@ -29,8 +30,8 @@ export class OrdersService {
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-    //@InjectRepository(User)
-    //private readonly usuariosRepository: Repository<User>,
+    @InjectRepository(Usuario)
+    private readonly usuariosRepository: Repository<Usuario>,
     private readonly ordersMapper: OrdersMapper,
   ) {}
 
@@ -61,17 +62,6 @@ export class OrdersService {
     const order = await this.orderRepository.findById(id).exec()
     if (!order) {
       throw new NotFoundException(`No se encontró el pedido con id: ${id}`)
-    }
-    return order
-  }
-
-  async findByIdUser(idUser: number) {
-    this.logger.log(`Buscando pedido con idUser: ${idUser}`)
-    const order = await this.orderRepository.find({ idUser: idUser }).exec()
-    if (!order) {
-      throw new NotFoundException(
-        `No se encontró el pedido con idUser: ${idUser}`,
-      )
     }
     return order
   }
@@ -138,7 +128,16 @@ export class OrdersService {
         `El cliente con id ${order.idClient} no existe`,
       )
     }
-    //TODO: Comprobar si el usuario existe
+
+    const usuario = await this.usuariosRepository.findOneBy({
+      id: order.idUser,
+    })
+
+    if (!usuario) {
+      throw new BadRequestException(
+        `El usuario con id ${order.idUser} no existe`,
+      )
+    }
 
     if (!order.orderLines || order.orderLines.length === 0) {
       throw new BadRequestException(
@@ -215,12 +214,22 @@ export class OrdersService {
     return order
   }
 
-  //TODO: Comprobar si el usuario existe
-  /*async userExists(idUsuario: number): Promise<boolean> {
+  async findByIdUser(idUser: number) {
+    this.logger.log(`Buscando pedido con idUser: ${idUser}`)
+    const order = await this.orderRepository.find({ idUser: idUser }).exec()
+    if (!order) {
+      throw new NotFoundException(
+        `No se encontró el pedido con idUser: ${idUser}`,
+      )
+    }
+    return order
+  }
+
+  async userExists(idUsuario: number): Promise<boolean> {
     this.logger.log(`Comprobando si existe el usuario ${idUsuario}`)
     const usuario = await this.usuariosRepository.findOneBy({ id: idUsuario })
     return !!usuario
-  }*/
+  }
 
   async clientExists(idClient: string): Promise<boolean> {
     this.logger.log(`Comprobando si existe el cliente ${idClient}`)

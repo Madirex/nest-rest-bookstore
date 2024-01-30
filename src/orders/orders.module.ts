@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { OrdersMapper } from './mappers/orders.mapper'
 import { Book } from '../books/entities/book.entity'
 import { Client } from '../client/entities/client.entity'
+import { Usuario } from '../users/entities/user.entity'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { Client } from '../client/entities/client.entity'
     ]),
     TypeOrmModule.forFeature([Book]),
     TypeOrmModule.forFeature([Client]),
+    TypeOrmModule.forFeature([Usuario]),
   ],
   controllers: [OrdersController],
   providers: [OrdersService, OrdersMapper],
