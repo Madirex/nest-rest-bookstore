@@ -7,18 +7,17 @@ import { UserRole } from './entities/user-role.entity'
 import { UsuariosMapper } from './mappers/usuarios.mapper'
 import { CacheModule } from '@nestjs/cache-manager'
 import { BcryptService } from './services/bcrypt.service'
-import { PedidosModule } from '../pedidos/pedidos.module'
+import { OrdersModule } from '../orders/orders.module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Usuario]),
     TypeOrmModule.forFeature([UserRole]),
     CacheModule.register(),
-    PedidosModule,
+    OrdersModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UsuariosMapper, BcryptService],
   exports: [UsersService],
 })
-export class UsersModule {
-}
+export class UsersModule {}

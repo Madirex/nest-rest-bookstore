@@ -8,6 +8,8 @@ import { StorageModule } from './storage/storage.module'
 import { ClientModule } from './client/client.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { OrdersModule } from './orders/orders.module'
+import { UsersModule } from './users/users.module'
+import { AuthModule } from './auth/auth.module'
 
 /**
  * Módulo principal de la aplicación
@@ -34,6 +36,8 @@ import { OrdersModule } from './orders/orders.module'
     NotificationsModule,
     CacheModule.register(),
     ClientModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
 })
