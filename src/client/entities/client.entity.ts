@@ -1,4 +1,4 @@
-import { Address } from 'src/common/address.entity'
+import { Address } from '../../common/address.entity'
 import { Column, Entity, PrimaryColumn } from 'typeorm'
 
 @Entity('clients')
@@ -20,10 +20,14 @@ export class Client {
   @Column('varchar', { length: 255, nullable: false })
   phone: string
 
-  @Column((type) => Address)
+  @Column(() => Address)
   address: Address
 
-  @Column('varchar', { length: 255, nullable: false, default: Client.IMAGE_DEFAULT })
+  @Column('varchar', {
+    length: 255,
+    nullable: false,
+    default: Client.IMAGE_DEFAULT,
+  })
   image: string
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })

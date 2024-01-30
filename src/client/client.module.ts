@@ -7,6 +7,9 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { ClientMapper } from './mappers/client.mapper'
 import { NotificationsModule } from '../websockets/notifications/notifications.module'
 import { StorageModule } from '../storage/storage.module'
+import { OrdersService } from '../orders/services/orders.service'
+import { OrdersModule } from '../orders/orders.module'
+import { Address } from '../common/address.entity'
 
 @Module({
   imports: [
@@ -14,6 +17,7 @@ import { StorageModule } from '../storage/storage.module'
     CacheModule.register(),
     NotificationsModule,
     StorageModule,
+    OrdersModule,
   ],
   controllers: [ClientController],
   providers: [ClientService, ClientMapper],

@@ -7,7 +7,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator'
-import { Address } from 'src/common/address.entity'
+import { Address } from '../../common/address.entity'
 
 export class CreateClientDto {
   @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
