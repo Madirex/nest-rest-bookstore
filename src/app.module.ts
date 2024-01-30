@@ -6,6 +6,8 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { NotificationsModule } from './websockets/notifications/notifications.module'
 import { StorageModule } from './storage/storage.module'
 import { ClientModule } from './client/client.module'
+import { MongooseModule } from '@nestjs/mongoose'
+import { OrdersModule } from './orders/orders.module'
 
 /**
  * Módulo principal de la aplicación
@@ -24,7 +26,11 @@ import { ClientModule } from './client/client.module'
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
       synchronize: true,
     }),
+    MongooseModule.forRoot(
+      'mongodb://admin:adminPassword123@localhost:27017/BOOKSTORE_DB',
+    ),
     StorageModule,
+    OrdersModule,
     NotificationsModule,
     CacheModule.register(),
     ClientModule,
