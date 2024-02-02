@@ -45,4 +45,5 @@ import { AuthModule } from './auth/auth.module'
 /**
  * Módulo principal de la aplicación
  */
-export class AppModule {}
+export class AppModule {
+}
