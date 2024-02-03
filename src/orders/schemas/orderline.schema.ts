@@ -5,7 +5,7 @@ export class OrderLine {
     type: Number,
     required: true,
   })
-  idProduct: number
+  productId: number
 
   @Prop({
     type: Number,

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { Usuario } from '../entities/user.entity'
+import { User } from '../entities/user.entity'
 import { UserDto } from '../dto/user-response.dto'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { UserRole } from '../entities/user-role.entity'
 
 @Injectable()
-export class UsuariosMapper {
-  toResponseDto(user: Usuario): UserDto {
+export class UserMapper {
+  toResponseDto(user: User): UserDto {
     const userDto = new UserDto()
     userDto.id = user.id
     userDto.nombre = user.nombre
@@ -20,7 +20,7 @@ export class UsuariosMapper {
     return userDto
   }
 
-  toResponseDtoWithRoles(user: Usuario, roles: UserRole[]): UserDto {
+  toResponseDtoWithRoles(user: User, roles: UserRole[]): UserDto {
     const userDto = new UserDto()
     userDto.id = user.id
     userDto.nombre = user.nombre
@@ -34,10 +34,10 @@ export class UsuariosMapper {
     return userDto
   }
 
-  toEntity(createUserDto: CreateUserDto): Usuario {
-    const usuario = new Usuario()
-    usuario.nombre = createUserDto.nombre
-    usuario.apellidos = createUserDto.apellidos
+  toEntity(createUserDto: CreateUserDto): User {
+    const usuario = new User()
+    usuario.nombre = createUserDto.name
+    usuario.apellidos = createUserDto.surnames
     usuario.email = createUserDto.email
     usuario.username = createUserDto.username
     usuario.password = createUserDto.password

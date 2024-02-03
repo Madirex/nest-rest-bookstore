@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { OrderLine } from './OrderLine'
 import * as mongoosePaginate from 'mongoose-paginate-v2'
+import { Document } from 'mongoose'
 
 export type OrderDocument = Order & Document
 
 @Schema({
-  collection: 'pedidos',
+  collection: 'orders',
   timestamps: false,
   versionKey: false,
   id: true,
@@ -24,13 +25,13 @@ export class Order {
     type: Number,
     required: true,
   })
-  idUser: number
+  userId: string
 
   @Prop({
     type: String,
     required: true,
   })
-  idClient: string
+  clientId: string
 
   @Prop({
     required: true,
@@ -53,5 +54,5 @@ export class Order {
   isDeleted: boolean
 }
 
-export const PedidoSchema = SchemaFactory.createForClass(Order)
-PedidoSchema.plugin(mongoosePaginate)
+export const OrderSchema = SchemaFactory.createForClass(Order)
+OrderSchema.plugin(mongoosePaginate)
