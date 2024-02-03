@@ -5,6 +5,7 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { NotificationsModule } from './websockets/notifications/notifications.module'
 import { StorageModule } from './storage/storage.module'
 import { ClientModule } from './client/client.module'
+import { ShopsModule } from './shop/shop.module';
 import { OrdersModule } from './orders/orders.module'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
@@ -31,6 +32,7 @@ import { DatabaseModule } from './config/database/database.module'
     NotificationsModule,
     CacheModule.register(),
     ClientModule,
+    ShopsModule,
     UsersModule,
     AuthModule,
   ],
