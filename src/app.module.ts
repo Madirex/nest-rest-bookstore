@@ -29,7 +29,7 @@ import { AuthModule } from './auth/auth.module'
       synchronize: true,
     }),
     MongooseModule.forRoot(
-      'mongodb://admin:adminPassword123@localhost:27017/BOOKSTORE_DB',
+      'mongodb://admin:password123@localhost:27017/BOOKSTORE_DB',
     ),
     StorageModule,
     OrdersModule,
@@ -45,5 +45,4 @@ import { AuthModule } from './auth/auth.module'
 /**
  * Módulo principal de la aplicación
  */
-export class AppModule {
-}
+export class AppModule {}
