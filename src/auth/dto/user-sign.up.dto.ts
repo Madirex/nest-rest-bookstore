@@ -1,13 +1,16 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator'
 
+/**
+ * @description DTO para registrar usuario
+ */
 export class UserSignUpDto {
   @IsNotEmpty({ message: 'Nombre no puede estar vacío' })
   @IsString({ message: 'Nombre no es válido' })
-  nombre: string
+  name: string
 
   @IsNotEmpty({ message: 'Apellidos no puede estar vacío' })
   @IsString({ message: 'Apellidos no es válido' })
-  apellidos: string
+  surname: string
 
   @IsNotEmpty({ message: 'Username no puede estar vacío' })
   @IsString({ message: 'Username no es válido' })
