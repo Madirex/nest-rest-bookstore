@@ -1,17 +1,18 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseUUIDPipe,
-  Put,
-  UseInterceptors,
-  UploadedFile,
-  Req,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Put,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
 import { CreateClientDto } from '../dto/create-client.dto'
 import { UpdateClientDto } from '../dto/update-client.dto'
@@ -22,12 +23,21 @@ import { Util } from '../../util/util'
 import { extname } from 'path'
 import { Request } from 'express'
 import { Paginate, PaginateQuery } from 'nestjs-paginate'
+import { Roles, RolesAuthGuard } from '../../auth/guards/roles-auth.guard'
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 /**
  * Controlador de Client
  */
 @Controller('client')
+@UseInterceptors(CacheInterceptor)
+@UseGuards(JwtAuthGuard, RolesAuthGuard)
 export class ClientController {
+  /**
+   * Constructor del controlador
+   * @param clientService Servicio de Client
+   */
   constructor(private readonly clientService: ClientService) {}
 
   /**
@@ -37,6 +47,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client
    */
   @Get()
+  @Roles('ADMIN')
   findAll(@Paginate() query: PaginateQuery) {
     return this.clientService.findAll(query)
   }
@@ -48,6 +59,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/1
    */
   @Get(':id')
+  @Roles('ADMIN')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientService.findOne(id)
   }
@@ -59,6 +71,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/email/1
    */
   @Get('/email/:email')
+  @Roles('ADMIN')
   findOneByEmail(@Param('email') email: string) {
     return this.clientService.findByEmail(email)
   }
@@ -70,6 +83,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client
    */
   @Post()
+  @Roles('ADMIN')
   create(@Body() createClientDto: CreateClientDto) {
     return this.clientService.create(createClientDto)
   }
@@ -83,6 +97,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/image/{uuid}
    */
   @Patch('/image/:id')
+  @Roles('ADMIN')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -130,6 +145,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/1
    */
   @Put(':id')
+  @Roles('ADMIN')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateClientDto: UpdateClientDto,
@@ -144,6 +160,7 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/1
    */
   @Delete(':id')
+  @Roles('ADMIN')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientService.remove(id)
   }
