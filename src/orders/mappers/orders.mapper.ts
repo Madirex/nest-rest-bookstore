@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common'
-import { CreateOrderDto } from '../dto/CreateOrderDto'
-import { Order } from '../schemas/Order'
 import { plainToClass } from 'class-transformer'
+import { CreateOrderDto } from '../dto/CreateOrderDto'
+import { Order } from '../schemas/order.schema'
 
+/**
+ * @description Maps a CreateOrderDto to an OrderSchema entity
+ */
 @Injectable()
 export class OrdersMapper {
-  toEntity(createPedidoDto: CreateOrderDto): Order {
-    return plainToClass(Order, createPedidoDto)
+  /**
+   * @description Maps a CreateOrderDto to an OrderSchema entity
+   * @param createOrderDto The CreateOrderDto to map
+   */
+  toEntity(createOrderDto: CreateOrderDto): Order {
+    return plainToClass(Order, createOrderDto)
   }
 }

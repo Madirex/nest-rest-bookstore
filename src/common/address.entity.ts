@@ -1,5 +1,8 @@
 import { Column } from 'typeorm'
 
+/**
+ * Address entity
+ */
 export class Address {
   @Column('varchar', { length: 255, nullable: false })
   street: string

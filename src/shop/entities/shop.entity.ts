@@ -10,6 +10,9 @@ import { Address } from '../../common/address.entity'
 import { Book } from '../../books/entities/book.entity'
 import { Client } from '../../client/entities/client.entity'
 
+/**
+ * Entidad de Shop
+ */
 @Entity('shops')
 export class Shop {
   @PrimaryGeneratedColumn('uuid')

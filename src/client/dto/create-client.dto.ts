@@ -9,6 +9,9 @@ import {
 } from 'class-validator'
 import { Address } from '../../common/address.entity'
 
+/**
+ * CreateClientDto
+ */
 export class CreateClientDto {
   @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
   @IsString({ message: 'El nombre debe de ser un String' })

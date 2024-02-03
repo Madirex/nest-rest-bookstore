@@ -11,4 +11,4 @@ db.createUser({
 
 db = db.getSiblingDB('BOOKSTORE_DB')
 
-db.createCollection('pedidos')
+db.createCollection('orders')

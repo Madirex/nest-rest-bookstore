@@ -1,9 +1,12 @@
 import { IsNotEmpty, IsNumber, Min } from 'class-validator'
 
+/**
+ * The OrderLineDto class is a data transfer object that is used to define the structure of the data that is used to create an order line.
+ */
 export class OrderLineDto {
   @IsNumber()
   @IsNotEmpty()
-  idProduct: number
+  productId: number
 
   @IsNumber()
   @IsNotEmpty()

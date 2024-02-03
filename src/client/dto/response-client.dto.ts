@@ -1,5 +1,8 @@
 import { Address } from 'src/common/address.entity'
 
+/**
+ * ResponseClientDto
+ */
 export class ResponseClientDto {
   id: string
   name: string

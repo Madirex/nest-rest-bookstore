@@ -1,6 +1,9 @@
 import { Address } from '../../common/address.entity'
 import { Column, Entity, PrimaryColumn } from 'typeorm'
 
+/**
+ * Client entity
+ */
 @Entity('clients')
 export class Client {
   static readonly IMAGE_DEFAULT = 'https://via.placeholder.com/150'

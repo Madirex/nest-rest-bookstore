@@ -1,7 +1,10 @@
+/**
+ * User response DTO
+ */
 export class UserDto {
-  id: number
-  nombre: string
-  apellidos: string
+  id: string
+  name: string
+  surname: string
   email: string
   username: string
   createdAt: Date

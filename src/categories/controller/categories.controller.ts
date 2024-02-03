@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
 import { CategoriesService } from '../service/categories.service'
@@ -15,12 +16,15 @@ import { CreateCategoryDto } from '../dto/create-category.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager'
 import { Paginate, PaginateQuery } from 'nestjs-paginate'
+import { Roles, RolesAuthGuard } from '../../auth/guards/roles-auth.guard'
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 
 /**
  * Controlador de categorías
  */
 @Controller('categories')
 @UseInterceptors(CacheInterceptor)
+@UseGuards(JwtAuthGuard, RolesAuthGuard)
 export class CategoriesController {
   private readonly logger = new Logger(CategoriesController.name)
 
@@ -40,6 +44,7 @@ export class CategoriesController {
   @CacheKey('all_categories')
   @CacheTTL(30)
   @HttpCode(200)
+  @Roles('USER')
   async findAll(@Paginate() query: PaginateQuery) {
     this.logger.log('Obteniendo todas las categorías')
     return await this.categoriesService.findAll(query)
@@ -53,6 +58,7 @@ export class CategoriesController {
    */
   @Get(':id')
   @HttpCode(200)
+  @Roles('USER')
   async findOne(@Param('id') id: number) {
     this.logger.log(`Obteniendo categoría por id: ${id}`)
     return await this.categoriesService.findOne(+id)
@@ -66,6 +72,7 @@ export class CategoriesController {
    */
   @Post()
   @HttpCode(201)
+  @Roles('ADMIN')
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     this.logger.log(
       `Creando categoría con datos: ${JSON.stringify(createCategoryDto)}`,
@@ -82,6 +89,7 @@ export class CategoriesController {
    */
   @Put(':id')
   @HttpCode(200)
+  @Roles('ADMIN')
   async update(
     @Param('id') id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -102,6 +110,7 @@ export class CategoriesController {
    */
   @Delete(':id')
   @HttpCode(204)
+  @Roles('ADMIN')
   async remove(@Param('id') id: number) {
     this.logger.log(`Eliminando categoría con id: ${id}`)
     return await this.categoriesService.remove(+id)

@@ -1,12 +1,9 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
-import { Usuario } from './user.entity'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+import { User } from './user.entity'
 
+/**
+ * Enum Role
+ */
 export enum Role {
   USER = 'USER',
   ADMIN = 'ADMIN',
@@ -14,14 +11,13 @@ export enum Role {
 
 @Entity({ name: 'user_roles' })
 export class UserRole {
-  @PrimaryGeneratedColumn()
-  id: number
+  @PrimaryColumn({ type: 'uuid' })
+  id: string
 
-  // Lo almaceno como varchar porque es más fácil de leer
   @Column({ type: 'varchar', length: 50, nullable: false, default: Role.USER })
   role: Role
 
-  @ManyToOne(() => Usuario, (user) => user.roles)
+  @ManyToOne(() => User, (user) => user.roles)
   @JoinColumn({ name: 'user_id' })
-  usuario: Usuario
+  user: User
 }

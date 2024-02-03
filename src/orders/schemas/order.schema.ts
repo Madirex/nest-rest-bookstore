@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { OrderLine } from './OrderLine'
+import { OrderlineSchema } from './orderline.schema'
 import * as mongoosePaginate from 'mongoose-paginate-v2'
 import { Document } from 'mongoose'
 
 export type OrderDocument = Order & Document
 
+/**
+ * @description Schema for the order entity
+ */
 @Schema({
   collection: 'orders',
   timestamps: false,
@@ -36,7 +39,7 @@ export class Order {
   @Prop({
     required: true,
   })
-  orderLines: OrderLine[]
+  orderLines: OrderlineSchema[]
 
   @Prop()
   totalItems: number

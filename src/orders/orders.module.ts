@@ -2,14 +2,17 @@ import { Module } from '@nestjs/common'
 import { OrdersService } from './services/orders.service'
 import { OrdersController } from './controllers/orders.controller'
 import { MongooseModule, SchemaFactory } from '@nestjs/mongoose'
-import { Order } from './schemas/Order'
+import { Order } from './schemas/order.schema'
 import * as mongoosePaginate from 'mongoose-paginate-v2'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { OrdersMapper } from './mappers/orders.mapper'
 import { Book } from '../books/entities/book.entity'
 import { Client } from '../client/entities/client.entity'
-import { Usuario } from '../users/entities/user.entity'
+import { User } from '../users/entities/user.entity'
 
+/**
+ * Módulo de Orders
+ */
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
@@ -24,7 +27,7 @@ import { Usuario } from '../users/entities/user.entity'
     ]),
     TypeOrmModule.forFeature([Book]),
     TypeOrmModule.forFeature([Client]),
-    TypeOrmModule.forFeature([Usuario]),
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [OrdersController],
   providers: [OrdersService, OrdersMapper],

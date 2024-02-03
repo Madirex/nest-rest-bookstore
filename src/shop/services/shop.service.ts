@@ -1,9 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
-  Inject,
   Param,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -21,16 +21,16 @@ import {
 import { Book } from '../../books/entities/book.entity'
 import { Client } from '../../client/entities/client.entity'
 import {
-  PaginateQuery,
+  FilterOperator,
+  FilterSuffix,
   paginate,
   Paginated,
-  FilterSuffix,
-  FilterOperator,
+  PaginateQuery,
 } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
 import { ResponseShopDto } from '../dto/response-shop.dto'
 import { CreateShopDto } from '../dto/create-shop.dto'
-import { UpdateShopDto } from "../dto/update-shop.dto";
+import { UpdateShopDto } from '../dto/update-shop.dto'
 
 /**
  * Servicio de Shops
@@ -59,40 +59,41 @@ export class ShopsService {
     private readonly shopsNotificationsGateway: ShopsNotificationsGateway,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
   /**
    * Obtiene todas las Shops
    * @param query Query de paginación
    * @returns Arreglo con todas las Shops
    */
   async findAllShops(query: PaginateQuery) {
-    this.logger.log('Obteniendo todas las Shops');
+    this.logger.log('Obteniendo todas las Shops')
 
     // Verificar caché
-    const cacheKey = `all_shops_page_${hash(JSON.stringify(query))}`;
-    const cache = await this.cacheManager.get(cacheKey);
+    const cacheKey = `all_shops_page_${hash(JSON.stringify(query))}`
+    const cache = await this.cacheManager.get(cacheKey)
     if (cache) {
-      this.logger.log('Cache hit');
-      return cache;
+      this.logger.log('Cache hit')
+      return cache
     }
 
     const queryBuilder = this.shopRepository
       .createQueryBuilder('shop')
       .leftJoinAndSelect('shop.books', 'books')
       .leftJoinAndSelect('shop.clients', 'clients')
-      .addSelect('shop.address');
-    let pagination: Paginated<Shop>;
+      .addSelect('shop.address')
+    let pagination: Paginated<Shop>
     try {
       pagination = await paginate(query, queryBuilder, {
-        sortableColumns: ['name', 'createdAt', 'updatedAt', 'address'], // Agrega address a las columnas ordenables
+        sortableColumns: ['name', 'createdAt', 'updatedAt', 'address'],
         defaultSortBy: [['name', 'ASC']],
         searchableColumns: ['name', 'address'],
         filterableColumns: {
           name: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
           address: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
         },
-      });
+      })
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException(error.message)
     }
 
     const res = {
@@ -101,14 +102,13 @@ export class ShopsService {
       ),
       meta: pagination.meta,
       links: pagination.links,
-    };
+    }
 
     // Guardar en caché
-    await this.cacheManager.set(cacheKey, res, 60);
+    await this.cacheManager.set(cacheKey, res, 60)
 
-    return res;
+    return res
   }
-
 
   /**
    * Obtiene una Shop dado el ID
@@ -116,38 +116,35 @@ export class ShopsService {
    * @returns Shop encontrada
    */
   async findOne(@Param('id') id: string): Promise<ResponseShopDto> {
-    this.logger.log(`Obteniendo Shop por id: ${id}`);
+    this.logger.log(`Obteniendo Shop por id: ${id}`)
 
     // Caché
-    const cache: ResponseShopDto = await this.cacheManager.get(`shop_${id}`);
+    const cache: ResponseShopDto = await this.cacheManager.get(`shop_${id}`)
     if (cache) {
-      this.logger.log('Cache hit');
-      return cache;
+      this.logger.log('Cache hit')
+      return cache
     }
 
     if (!id || !validateUUID(id)) {
-      throw new BadRequestException('ID no válido');
+      throw new BadRequestException('ID no válido')
     }
 
     const shop = await this.shopRepository.findOne({
       where: { id },
       relations: ['books', 'clients'],
-    });
+    })
 
     if (!shop) {
-      throw new NotFoundException(`Shop con ID: ${id} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${id} no encontrada`)
     }
 
-
-    const res = this.shopMapper.mapEntityToResponseDto(shop);
+    const res = this.shopMapper.mapEntityToResponseDto(shop)
 
     // Se guarda en caché
-    await this.cacheManager.set(`shop_${id}`, res, 60);
+    await this.cacheManager.set(`shop_${id}`, res, 60)
 
-    return res;
+    return res
   }
-
-
 
   /**
    * Crea una Shop
@@ -155,27 +152,27 @@ export class ShopsService {
    * @returns Shop creada
    */
   async create(createShopDto: CreateShopDto): Promise<ResponseShopDto> {
-    this.logger.log(`Creando Shop con datos: ${JSON.stringify(createShopDto)}`);
+    this.logger.log(`Creando Shop con datos: ${JSON.stringify(createShopDto)}`)
 
-    const existingShop = await this.getByName(createShopDto.name.trim());
+    const existingShop = await this.getByName(createShopDto.name.trim())
     if (existingShop) {
-      this.logger.log(`Shop con nombre: ${existingShop.name} ya existe`);
-      throw new BadRequestException(`La Shop con el nombre ${existingShop.name} ya existe`);
+      this.logger.log(`Shop con nombre: ${existingShop.name} ya existe`)
+      throw new BadRequestException(
+        `La Shop con el nombre ${existingShop.name} ya existe`,
+      )
     }
-    const books = [];
-    const clients = [];
-    const shop = this.shopMapper.toEntity(createShopDto, books, clients);
-    const savedShop = await this.shopRepository.save(shop);
+    const books = []
+    const clients = []
+    const shop = this.shopMapper.toEntity(createShopDto, books, clients)
+    const savedShop = await this.shopRepository.save(shop)
 
-    const responseDto = this.shopMapper.mapEntityToResponseDto(savedShop);
+    const responseDto = this.shopMapper.mapEntityToResponseDto(savedShop)
 
-    this.onChange(NotificationType.CREATE, responseDto);
-    await this.invalidateCacheKey('all_shops');
+    this.onChange(NotificationType.CREATE, responseDto)
+    await this.invalidateCacheKey('all_shops')
 
-    return responseDto;
+    return responseDto
   }
-
-
 
   /**
    * Actualiza un Shop
@@ -187,40 +184,40 @@ export class ShopsService {
     @Param('id') id: string,
     updateShopDto: UpdateShopDto,
   ): Promise<ResponseShopDto> {
-    this.logger.log(`Actualizando Shop con datos: ${JSON.stringify(updateShopDto)}`);
+    this.logger.log(
+      `Actualizando Shop con datos: ${JSON.stringify(updateShopDto)}`,
+    )
 
     if (!id || !validateUUID(id)) {
-      throw new BadRequestException('ID no válido');
+      throw new BadRequestException('ID no válido')
     }
 
     const shopToUpdate = await this.shopRepository.findOne({
       where: { id },
       relations: ['books', 'clients'],
-    });
+    })
 
     if (!shopToUpdate) {
-      throw new NotFoundException(`Shop con ID: ${id} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${id} no encontrada`)
     }
-
 
     const updatedShop = this.shopMapper.mapUpdateToEntity(
       updateShopDto,
       shopToUpdate,
       shopToUpdate.books,
-      shopToUpdate.clients
-    );
+      shopToUpdate.clients,
+    )
 
-    const savedShop = await this.shopRepository.save(updatedShop);
+    const savedShop = await this.shopRepository.save(updatedShop)
 
-    const responseDto = this.shopMapper.mapEntityToResponseDto(savedShop);
-    this.onChange(NotificationType.UPDATE, responseDto);
+    const responseDto = this.shopMapper.mapEntityToResponseDto(savedShop)
+    this.onChange(NotificationType.UPDATE, responseDto)
 
-    await this.invalidateCacheKey(`shop_${id}`);
-    await this.invalidateCacheKey('all_shops');
+    await this.invalidateCacheKey(`shop_${id}`)
+    await this.invalidateCacheKey('all_shops')
 
-    return responseDto;
+    return responseDto
   }
-
 
   /**
    * Elimina una Shop
@@ -228,29 +225,29 @@ export class ShopsService {
    * @returns Shop eliminada
    */
   async remove(@Param('id') id: string): Promise<ResponseShopDto> {
-    this.logger.log(`Eliminando Shop con id: ${id}`);
+    this.logger.log(`Eliminando Shop con id: ${id}`)
 
     if (!id || !validateUUID(id)) {
-      throw new BadRequestException('ID no válido');
+      throw new BadRequestException('ID no válido')
     }
 
-    const shopToRemove = await this.shopRepository.findOne({ where: { id } });
+    const shopToRemove = await this.shopRepository.findOne({ where: { id } })
 
     if (!shopToRemove) {
-      throw new NotFoundException(`Shop con ID: ${id} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${id} no encontrada`)
     }
 
+    await this.shopRepository.remove(shopToRemove)
 
-    await this.shopRepository.remove(shopToRemove);
+    const responseDto = this.shopMapper.mapEntityToResponseDto(shopToRemove)
+    this.onChange(NotificationType.DELETE, responseDto)
 
-    const responseDto = this.shopMapper.mapEntityToResponseDto(shopToRemove);
-    this.onChange(NotificationType.DELETE, responseDto);
+    await this.invalidateCacheKey(`shop_${id}`)
+    await this.invalidateCacheKey('all_shops')
 
-    await this.invalidateCacheKey(`shop_${id}`);
-    await this.invalidateCacheKey('all_shops');
-
-    return responseDto;
+    return responseDto
   }
+
   /**
    * Retorna una Shop dado el nombre
    * @param name Nombre de la Shop
@@ -261,13 +258,13 @@ export class ShopsService {
     const shopOp = await this.shopRepository
       .createQueryBuilder('shop')
       .where('LOWER(shop.name) = LOWER(:name)', { name: name.toLowerCase() })
-      .getOne();
+      .getOne()
 
     if (!shopOp) {
-      throw new NotFoundException(`Shop con nombre: ${name} no encontrada`);
+      throw new NotFoundException(`Shop con nombre: ${name} no encontrada`)
     }
 
-    return this.shopMapper.mapEntityToResponseDto(shopOp);
+    return this.shopMapper.mapEntityToResponseDto(shopOp)
   }
 
   /**
@@ -279,14 +276,16 @@ export class ShopsService {
     const shop = await this.shopRepository
       .createQueryBuilder('shop')
       .leftJoinAndSelect('shop.books', 'book')
-      .where('LOWER(shop.name) = LOWER(:name)', { name: shopName.toLowerCase() })
-      .getOne();
+      .where('LOWER(shop.name) = LOWER(:name)', {
+        name: shopName.toLowerCase(),
+      })
+      .getOne()
 
     if (!shop) {
-      throw new NotFoundException(`Shop con nombre: ${shopName} no encontrada`);
+      throw new NotFoundException(`Shop con nombre: ${shopName} no encontrada`)
     }
 
-    return shop.books;
+    return shop.books
   }
 
   /**
@@ -298,17 +297,17 @@ export class ShopsService {
     const shop = await this.shopRepository
       .createQueryBuilder('shop')
       .leftJoinAndSelect('shop.clients', 'client')
-      .where('LOWER(shop.name) = LOWER(:name)', { name: shopName.toLowerCase() })
-      .getOne();
+      .where('LOWER(shop.name) = LOWER(:name)', {
+        name: shopName.toLowerCase(),
+      })
+      .getOne()
 
     if (!shop) {
-      throw new NotFoundException(`Shop con nombre: ${shopName} no encontrada`);
+      throw new NotFoundException(`Shop con nombre: ${shopName} no encontrada`)
     }
 
-    return shop.clients;
-
+    return shop.clients
   }
-
 
   /**
    * @description Método que invalida una clave de caché
@@ -333,11 +332,9 @@ export class ShopsService {
       type,
       data,
       new Date(),
-    );
-    this.shopsNotificationsGateway.sendMessage(notification);
+    )
+    this.shopsNotificationsGateway.sendMessage(notification)
   }
-
-  // Dentro de tu clase ShopsService
 
   /**
    * Añade un libro a la tienda.
@@ -346,25 +343,28 @@ export class ShopsService {
    * @param bookId Identificador del libro.
    * @returns La tienda actualizada.
    */
-  async addBookToShop(shopId: string, bookId: number): Promise<ResponseShopDto> {
+  async addBookToShop(
+    shopId: string,
+    bookId: number,
+  ): Promise<ResponseShopDto> {
     const shop = await this.shopRepository.findOne({
       where: { id: shopId },
       relations: ['books', 'clients'],
-    });
+    })
     if (!shop) {
-      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`)
     }
 
-    const book = await this.bookRepository.findOneBy({ id: bookId });
+    const book = await this.bookRepository.findOneBy({ id: bookId })
     if (!book) {
-      throw new NotFoundException(`Book con ID: ${bookId} no encontrado`);
+      throw new NotFoundException(`Book con ID: ${bookId} no encontrado`)
     }
 
-    shop.books.push(book);
+    shop.books.push(book)
 
-    await this.shopRepository.save(shop);
+    await this.shopRepository.save(shop)
 
-    return this.shopMapper.mapEntityToResponseDto(shop);
+    return this.shopMapper.mapEntityToResponseDto(shop)
   }
 
   /**
@@ -374,20 +374,23 @@ export class ShopsService {
    * @param bookId Identificador del libro.
    * @returns La tienda actualizada.
    */
-  async removeBookFromShop(shopId: string, bookId: number): Promise<ResponseShopDto> {
+  async removeBookFromShop(
+    shopId: string,
+    bookId: number,
+  ): Promise<ResponseShopDto> {
     const shop = await this.shopRepository.findOne({
       where: { id: shopId },
       relations: ['books', 'clients'],
-    });
+    })
     if (!shop) {
-      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`)
     }
 
-    shop.books = shop.books.filter(book => book.id !== bookId);
+    shop.books = shop.books.filter((book) => book.id !== bookId)
 
-    await this.shopRepository.save(shop);
+    await this.shopRepository.save(shop)
 
-    return this.shopMapper.mapEntityToResponseDto(shop);
+    return this.shopMapper.mapEntityToResponseDto(shop)
   }
 
   /**
@@ -397,25 +400,28 @@ export class ShopsService {
    * @param clientId Identificador del cliente.
    * @returns La tienda actualizada.
    */
-  async addClientToShop(shopId: string, clientId: string): Promise<ResponseShopDto> {
+  async addClientToShop(
+    shopId: string,
+    clientId: string,
+  ): Promise<ResponseShopDto> {
     const shop = await this.shopRepository.findOne({
       where: { id: shopId },
       relations: ['books', 'clients'],
-    });
+    })
     if (!shop) {
-      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`)
     }
 
-    const client = await this.clientRepository.findOneBy({ id: clientId });
+    const client = await this.clientRepository.findOneBy({ id: clientId })
     if (!client) {
-      throw new NotFoundException(`Client con ID: ${clientId} no encontrado`);
+      throw new NotFoundException(`Client con ID: ${clientId} no encontrado`)
     }
 
-    shop.clients.push(client);
+    shop.clients.push(client)
 
-    await this.shopRepository.save(shop);
+    await this.shopRepository.save(shop)
 
-    return this.shopMapper.mapEntityToResponseDto(shop);
+    return this.shopMapper.mapEntityToResponseDto(shop)
   }
 
   /**
@@ -425,21 +431,22 @@ export class ShopsService {
    * @param clientId Identificador del cliente.
    * @returns La tienda actualizada.
    */
-  async removeClientFromShop(shopId: string, clientId: string): Promise<ResponseShopDto> {
+  async removeClientFromShop(
+    shopId: string,
+    clientId: string,
+  ): Promise<ResponseShopDto> {
     const shop = await this.shopRepository.findOne({
       where: { id: shopId },
       relations: ['books', 'clients'],
-    });
+    })
     if (!shop) {
-      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`);
+      throw new NotFoundException(`Shop con ID: ${shopId} no encontrada`)
     }
 
-    shop.clients = shop.clients.filter(client => client.id !== clientId);
+    shop.clients = shop.clients.filter((client) => client.id !== clientId)
 
-    await this.shopRepository.save(shop);
+    await this.shopRepository.save(shop)
 
-    return this.shopMapper.mapEntityToResponseDto(shop);
+    return this.shopMapper.mapEntityToResponseDto(shop)
   }
-
-
 }
