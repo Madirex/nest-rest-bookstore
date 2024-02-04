@@ -22,10 +22,23 @@ import { diskStorage } from 'multer'
 import { Util } from '../../util/util'
 import { extname } from 'path'
 import { Request } from 'express'
-import { Paginate, PaginateQuery } from 'nestjs-paginate'
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate'
 import { Roles, RolesAuthGuard } from '../../auth/guards/roles-auth.guard'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { CacheInterceptor } from '@nestjs/cache-manager'
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiNotFoundResponse,
+  ApiParam,
+  ApiProperty,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import { ResponseClientDto } from '../dto/response-client.dto'
 
 /**
  * Controlador de Client
@@ -33,6 +46,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager'
 @Controller('client')
 @UseInterceptors(CacheInterceptor)
 @UseGuards(JwtAuthGuard, RolesAuthGuard)
+@ApiTags('Client')
 export class ClientController {
   /**
    * Constructor del controlador
@@ -48,6 +62,41 @@ export class ClientController {
    */
   @Get()
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 200,
+    description: 'Clientes encontrados',
+    type: Paginated<ResponseClientDto>,
+  })
+  @ApiQuery({
+    description: 'Filtro por límite por página',
+    name: 'limit',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    description: 'Filtro por página',
+    name: 'page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    description: 'Filtro de ordenación: campo:ASC|DESC',
+    name: 'sortBy',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    description: 'Filtro de búsqueda: filter.campo = $eq:valor',
+    name: 'filter',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    description: 'Filtro de búsqueda: search = valor',
+    name: 'search',
+    required: false,
+    type: String,
+  })
   findAll(@Paginate() query: PaginateQuery) {
     return this.clientService.findAll(query)
   }
@@ -60,6 +109,22 @@ export class ClientController {
    */
   @Get(':id')
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 200,
+    description: 'Cliente encontrado',
+    type: ResponseClientDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del cliente',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Cliente no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del cliente no es válido',
+  })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientService.findOne(id)
   }
@@ -72,6 +137,22 @@ export class ClientController {
    */
   @Get('/email/:email')
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 200,
+    description: 'Cliente encontrado',
+    type: ResponseClientDto,
+  })
+  @ApiParam({
+    name: 'email',
+    description: 'Email del cliente',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Cliente no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El email del cliente no es válido',
+  })
   findOneByEmail(@Param('email') email: string) {
     return this.clientService.findByEmail(email)
   }
@@ -84,6 +165,14 @@ export class ClientController {
    */
   @Post()
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 201,
+    description: 'Cliente creado',
+    type: ResponseClientDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Datos no válidos',
+  })
   create(@Body() createClientDto: CreateClientDto) {
     return this.clientService.create(createClientDto)
   }
@@ -97,7 +186,42 @@ export class ClientController {
    * @example http://localhost:3000/v1/client/image/{uuid}
    */
   @Patch('/image/:id')
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Imagen actualizada',
+    type: ResponseClientDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del cliente',
+    type: String,
+  })
+  @ApiProperty({
+    name: 'file',
+    description: 'Fichero de imagen',
+    type: 'string',
+    format: 'binary',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Fichero de imagen',
+    type: FileInterceptor('file'),
+  })
+  @ApiNotFoundResponse({
+    description: 'Cliente no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del cliente no es válido',
+  })
+  @ApiBadRequestResponse({
+    description: 'El fichero no es válido o es de un tipo no soportado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El fichero no puede ser mayor a 1 megabyte',
+  })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -146,6 +270,22 @@ export class ClientController {
    */
   @Put(':id')
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 200,
+    description: 'Cliente actualizado',
+    type: ResponseClientDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del cliente',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Cliente no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del cliente no es válido',
+  })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateClientDto: UpdateClientDto,
@@ -161,6 +301,21 @@ export class ClientController {
    */
   @Delete(':id')
   @Roles('ADMIN')
+  @ApiResponse({
+    status: 204,
+    description: 'Cliente eliminado',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del cliente',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Cliente no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del cliente no es válido',
+  })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientService.remove(id)
   }
