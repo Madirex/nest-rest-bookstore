@@ -1,5 +1,6 @@
 import { Address } from '../../common/address.entity'
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm'
+import { Shop } from '../../shop/entities/shop.entity'
 
 /**
  * Client entity
@@ -41,4 +42,7 @@ export class Client {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date
+
+  @ManyToOne(() => Shop, (shop) => shop.clients, { lazy: true })
+  shop: Promise<Shop>
 }
