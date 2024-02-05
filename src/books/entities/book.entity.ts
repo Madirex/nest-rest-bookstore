@@ -29,7 +29,7 @@ export class Book {
   @Column({ name: 'publisher', type: 'varchar', length: 255 })
   publisher: string //TODO: hacer relación
 
-  @ManyToOne(() => Category, (category) => category.books)
+  @ManyToOne(() => Category, (category: Category) => category.books)
   @JoinColumn({ name: 'category_id' })
   category: Category
 
@@ -64,5 +64,5 @@ export class Book {
   isActive: boolean
 
   @ManyToOne(() => Shop, (shop) => shop.books, { lazy: true })
-  shop: Promise<Shop>
+  shop: Shop
 }

@@ -38,7 +38,7 @@ export class Category {
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string
 
-  @OneToMany(() => Book, (book) => book.category)
+  @OneToMany(() => Book, (book: Book) => book.category)
   books: Book[]
 
   @CreateDateColumn({
