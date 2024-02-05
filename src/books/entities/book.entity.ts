@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Category } from '../../categories/entities/category.entity'
+import { Shop } from '../../shop/entities/shop.entity'
 
 /**
  * Entity Book
@@ -61,4 +62,7 @@ export class Book {
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean
+
+  @ManyToOne(() => Shop, (shop) => shop.books, { lazy: true })
+  shop: Promise<Shop>
 }

@@ -32,6 +32,7 @@ describe('BookMapper', () => {
     },
     author: '',
     publisher: '0', //TODO: cambiar por datos Publisher cuando se haga la relación
+    shop: null,
   }
 
   beforeEach(async () => {
