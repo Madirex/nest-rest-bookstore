@@ -9,6 +9,7 @@ import { OrdersMapper } from './mappers/orders.mapper'
 import { Book } from '../books/entities/book.entity'
 import { Client } from '../client/entities/client.entity'
 import { User } from '../users/entities/user.entity'
+import { CacheModule } from '@nestjs/cache-manager'
 
 /**
  * Módulo de Orders
@@ -28,6 +29,7 @@ import { User } from '../users/entities/user.entity'
     TypeOrmModule.forFeature([Book]),
     TypeOrmModule.forFeature([Client]),
     TypeOrmModule.forFeature([User]),
+    CacheModule.register(),
   ],
   controllers: [OrdersController],
   providers: [OrdersService, OrdersMapper],
