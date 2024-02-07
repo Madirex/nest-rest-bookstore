@@ -64,5 +64,6 @@ export class Book {
   isActive: boolean
 
   @ManyToOne(() => Shop, (shop) => shop.books, { lazy: true })
+  @JoinColumn({ name: 'shop_id' })
   shop: Shop
 }
