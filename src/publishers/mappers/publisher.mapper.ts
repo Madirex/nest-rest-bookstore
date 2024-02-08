@@ -8,8 +8,7 @@ import {ResponsePublisherDto} from "../dto/response-publisher.dto";
 
 @Injectable()
 export class PublisherMapper {
-    toEntity(createPublisherDto: CreatePublisherDto,
-             books: Book[],
+    toEntity(createPublisherDto: CreatePublisherDto
     ): Publisher {
         const publisherEntity = plainToClass(Publisher, createPublisherDto)
         publisherEntity.createdAt = new Date()
@@ -18,7 +17,6 @@ export class PublisherMapper {
         publisherEntity.image = createPublisherDto.image
             ? createPublisherDto.image.trim()
             : Publisher.IMAGE_DEFAULT
-        publisherEntity.books = books
         publisherEntity.isActive = true
         return publisherEntity
     }
@@ -26,7 +24,6 @@ export class PublisherMapper {
     updateToEntity(
         dto: UpdatePublisherDto,
         entity: Publisher,
-        books: Book[]
     ): Publisher {
         const publisher = new Publisher()
         publisher.id = entity.id
@@ -34,7 +31,6 @@ export class PublisherMapper {
         publisher.updatedAt = new Date()
         publisher.name = dto.name ? dto.name.trim() : entity.name
         publisher.image = dto.image ? dto.image.trim() : entity.image
-        publisher.books = books || entity.books
         publisher.isActive = entity.isActive
         return publisher
     }
