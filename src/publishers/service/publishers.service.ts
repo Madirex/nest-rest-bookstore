@@ -15,6 +15,7 @@ import {NotificationType, WsNotification} from "../../websockets/notifications/n
 import {CreatePublisherDto} from "../dto/create-publisher.dto";
 import {PublishersNotificationsGateway} from "../../websockets/notifications/publishers-notification.gateway";
 import {UpdatePublisherDto} from "../dto/update-publisher.dto";
+import {Request} from "express";
 
 @Injectable()
 export class PublishersService {
@@ -250,6 +251,66 @@ export class PublishersService {
             new Date(),
         )
         this.publishersNotificationsGateway.sendMessage(notification)
+    }
+
+    public async updateImage(
+        id: number,
+        file: Express.Multer.File,
+        req: Request,
+        withUrl: boolean = false,
+    ) {
+        this.logger.log(`Actualizando imagen Publisher por id: ${id}`)
+        await this.findOne(id)
+        const publisherToUpdate = await this.publisherRepository.findOne({
+            where: { id },
+        })
+
+        if (publisherToUpdate.image !== Publisher.IMAGE_DEFAULT) {
+            this.logger.log(`Borrando imagen ${publisherToUpdate.image}`)
+            let imagePath = publisherToUpdate.image
+            if (withUrl) {
+                imagePath = this.storageService.getFileNameWithoutUrl(
+                    publisherToUpdate.image,
+                )
+            }
+            try {
+                this.storageService.removeFile(imagePath)
+            } catch (error) {
+                this.logger.error(error)
+            }
+        }
+
+        if (!file) {
+            throw new BadRequestException('Fichero no encontrado.')
+        }
+
+        let filePath: string
+
+        if (withUrl) {
+            this.logger.log(`Generando url para ${file.filename}`)
+            const apiVersion = process.env.API_VERSION
+                ? `/${process.env.API_VERSION}`
+                : '/v1'
+            filePath = `${req.protocol}://${req.get('host')}${apiVersion}/storage/${
+                file.filename
+            }`
+        } else {
+            filePath = file.filename
+        }
+
+        publisherToUpdate.image = filePath
+
+        const dto = this.publisherMapper.toResponseDto(publisherToUpdate)
+
+        this.onChange(NotificationType.UPDATE, dto)
+
+        const res = await this.publisherRepository.save(publisherToUpdate)
+
+        // invalidar caché
+        await this.invalidateCacheKey(`publisher_${id}`)
+        await this.invalidateCacheKey('all_publishers')
+
+        return this.publisherMapper.toResponseDto(res)
     }
 
     async invalidateCacheKey(keyPattern: string): Promise<void> {
