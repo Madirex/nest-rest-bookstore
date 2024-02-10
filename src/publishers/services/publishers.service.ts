@@ -43,7 +43,6 @@ export class PublisherService {
    * @param publisherRepository repositorio de publishers
    * @param publisherMapper mapeador de publishers
    * @param storageService servicio de almacenamiento
-   * @param ordersService servicio de pedidos
    * @param publisherNotificationGateway publisher de notificaciones
    * @param cacheManager cache manager
    */
@@ -52,7 +51,6 @@ export class PublisherService {
     private readonly publisherRepository: Repository<Publisher>,
     private readonly publisherMapper: PublisherMapper,
     private readonly storageService: StorageService,
-    private readonly ordersService: OrdersService,
     private readonly publisherNotificationGateway: PublishersNotificationsGateway,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
