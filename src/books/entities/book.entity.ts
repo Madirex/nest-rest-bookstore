@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 import { Category } from '../../categories/entities/category.entity'
 import { Shop } from '../../shop/entities/shop.entity'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 /**
  * Entity Book
@@ -27,7 +28,7 @@ export class Book {
   author: string
 
   @Column({ name: 'publisher', type: 'varchar', length: 255 })
-  publisher: string //TODO: hacer relación
+  publisher: Publisher
 
   @ManyToOne(() => Category, (category: Category) => category.books)
   @JoinColumn({ name: 'category_id' })

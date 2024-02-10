@@ -55,7 +55,15 @@ describe('BooksService', () => {
     id: id,
     name: 'Book Ejemplo',
     author: 'Autor Ejemplo',
-    publisher: 'Editorial Ejemplo',
+    publisher: {
+      id: 1,
+      name: 'Publisher',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      books: null,
+      image: 'publisher-image.jpg',
+      active: true,
+    },
     category: {
       id: 1,
       name: 'test',
@@ -72,6 +80,7 @@ describe('BooksService', () => {
     createdAt: new Date('2023-01-01T12:00:00Z'),
     updatedAt: new Date('2023-01-02T14:30:00Z'),
     isActive: true,
+    shop: null,
   }
 
   const createBookDto: CreateBookDto = {
