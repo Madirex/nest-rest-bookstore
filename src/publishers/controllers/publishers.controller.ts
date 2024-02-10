@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UploadedFile,
   UseGuards,
@@ -161,7 +162,7 @@ export class PublishersController {
     description: 'El id de la editorial no es válido',
   })
   @HttpCode(200)
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: number,
     @Body() updatePublisherDto: UpdatePublisherDto,

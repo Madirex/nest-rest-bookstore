@@ -202,7 +202,7 @@ export class PublisherService {
       )
     }
 
-    const publisherToUpdate = await this.publisherRepository.findOneBy({ name })
+    const publisherToUpdate = await this.publisherRepository.findOneBy({ id })
     if (!publisherToUpdate) {
       this.logger.warn(`No se encontró el publisher con id: ${id}`)
       throw new NotFoundException(`No se encontró el publisher con id: ${id}`)
