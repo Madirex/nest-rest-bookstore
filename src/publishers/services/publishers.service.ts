@@ -28,7 +28,6 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
-import { OrdersService } from '../../orders/services/orders.service'
 import { PublishersNotificationsGateway } from '../../websockets/notifications/publishers-notification.gateway'
 
 /**

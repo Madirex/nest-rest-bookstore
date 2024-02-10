@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { PublishersService } from './services/publishers.service'
+import { PublisherService } from './services/publishers.service'
 import { PublishersController } from './controllers/publishers.controller'
 import { PublisherMapper } from './mappers/publisher.mapper'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -8,6 +8,7 @@ import { Book } from '../books/entities/book.entity'
 import { StorageModule } from '../storage/storage.module'
 import { NotificationsModule } from '../websockets/notifications/notifications.module'
 import { CacheModule } from '@nestjs/cache-manager'
+import { PublishersNotificationsGateway } from '../websockets/notifications/publishers-notification.gateway'
 
 /**
  * Módulo de Publishers
@@ -21,6 +22,10 @@ import { CacheModule } from '@nestjs/cache-manager'
     CacheModule.register(),
   ],
   controllers: [PublishersController],
-  providers: [PublishersService, PublisherMapper],
+  providers: [
+    PublisherService,
+    PublisherMapper,
+    PublishersNotificationsGateway,
+  ],
 })
 export class PublishersModule {}
