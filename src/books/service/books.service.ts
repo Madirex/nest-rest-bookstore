@@ -83,7 +83,6 @@ export class BooksService {
     const queryBuilder = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.category', 'category')
-      .leftJoinAndSelect('book.publisher', 'publisher')
 
     let pagination: Paginated<Book>
     try {
@@ -147,7 +146,7 @@ export class BooksService {
     }
     const book = await this.bookRepository.findOne({
       where: { id },
-      relations: ['category', 'publisherId'],
+      relations: ['category'],
     })
 
     if (!book) {
@@ -193,7 +192,7 @@ export class BooksService {
       delete book.category
     }
     if (book.publisher == null) {
-      delete book.publisher
+      throw new BadRequestException('Editorial no encontrada')
     }
 
     const dto = this.bookMapper.mapEntityToResponseDto(book)
@@ -247,7 +246,7 @@ export class BooksService {
     await this.findOne(id)
     const bookToUpdate = await this.bookRepository.findOne({
       where: { id },
-      relations: ['category', 'publisherId'],
+      relations: ['category'],
     })
 
     if (!bookToUpdate) {
@@ -329,7 +328,7 @@ export class BooksService {
     await this.findOne(id)
     const bookToRemove = await this.bookRepository.findOne({
       where: { id },
-      relations: ['category', 'publisherId'],
+      relations: ['category'],
     })
 
     const dto = this.bookMapper.mapEntityToResponseDto(bookToRemove)
@@ -411,7 +410,7 @@ export class BooksService {
     await this.findOne(id)
     const bookToUpdate = await this.bookRepository.findOne({
       where: { id },
-      relations: ['category', 'publisherId'],
+      relations: ['category'],
     })
 
     if (bookToUpdate.image !== Book.IMAGE_DEFAULT) {

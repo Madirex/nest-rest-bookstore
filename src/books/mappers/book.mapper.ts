@@ -73,7 +73,7 @@ export class BookMapper {
     if (entity && entity.category && 'name' in entity.category) {
       responseBookDto.category = entity.category.name
     }
-    if (entity && entity.publisher && 'name' in entity.publisher) {
+    if (entity && entity.publisher) {
       responseBookDto.publisherId = entity.publisher.id
     }
     Util.responseBookDtoAddPath(responseBookDto) //agregarle el path a la imagen
