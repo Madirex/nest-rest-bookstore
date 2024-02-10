@@ -1,45 +1,47 @@
-import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from 'typeorm'
 import { Book } from '../../books/entities/book.entity'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
+/**
+ * @description Entidad de la editorial
+ */
 @Entity('publishers')
 export class Publisher {
     static IMAGE_DEFAULT = 'default.png'
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number
 
-    @Column({name: 'name', type: 'varchar', length: 255})
-    name: string
+  @Column({ name: 'name', type: 'varchar', length: 255 })
+  name: string
 
-    @Column({type: 'text', default: Publisher.IMAGE_DEFAULT})
-    image: string
+  @OneToMany(() => Book, (book: Book) => book.publisher)
+  books: Set<Book>
 
-    @OneToMany(() => Book, (book) => book.publisher)
-    books: Book[]
+  @Column({type: 'varchar', length: 255, default: Publisher.IMAGE_DEFAULT})
+  image: string
 
-    @CreateDateColumn({
-        name: 'created_at',
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  active: boolean
 
-    @UpdateDateColumn({
-        name: 'updated_at',
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP',
-        onUpdate: 'CURRENT_TIMESTAMP',
-    })
-    updatedAt: Date
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date
 
-    @Column({ name: 'is_active', type: 'boolean', default: true })
-    isActive: boolean
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date
 }

@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { CorsConfigModule } from './config/cors/cors.module'
 import { DatabaseModule } from './config/database/database.module'
-import {PublishersModule} from "./publishers/publishers.module";
+import { PublishersModule } from './publishers/publishers.module'
 
 /**
  * Módulo principal de la aplicación

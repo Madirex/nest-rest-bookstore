@@ -1,7 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types'
-import {CreatePublisherDto} from "./create-publisher.dto";
+import { PartialType } from '@nestjs/swagger'
+import { CreatePublisherDto } from './create-publisher.dto'
 
 /**
- * DTO de actualización de libro
+ * DTO para actualizar un Publisher
  */
 export class UpdatePublisherDto extends PartialType(CreatePublisherDto) {}
