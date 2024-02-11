@@ -6,7 +6,7 @@ import {
   HttpCode,
   Logger,
   NotFoundException,
-  Param,
+  Param, ParseIntPipe, ParseUUIDPipe,
   Patch,
   Post,
   Put,
