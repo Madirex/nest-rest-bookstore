@@ -5,7 +5,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param,
+  Param, ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -137,7 +137,7 @@ export class PublishersController {
   })
   @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.publisherService.findOne(+id)
   }
 
@@ -164,10 +164,10 @@ export class PublishersController {
   @HttpCode(200)
   @Put(':id')
   update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePublisherDto: UpdatePublisherDto,
   ) {
-    return this.publisherService.update(+id, updatePublisherDto)
+    return this.publisherService.update(id, updatePublisherDto)
   }
 
   /**
@@ -191,7 +191,7 @@ export class PublishersController {
   })
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.publisherService.remove(+id)
   }
 
@@ -255,5 +255,65 @@ export class PublishersController {
     }
 
     return await this.publisherService.updateImage(id, file, req, false)
+  }
+
+  @ApiResponse({
+      status: 200,
+      description: 'Editorial actualizada',
+  })
+  @ApiParam({
+      name: 'id',
+      description: 'Identificador de la editorial',
+      type: String,
+  })
+  @ApiParam({
+    name: 'bookId',
+    description: 'Identificador del libro',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+      description: 'Editorial no encontrada',
+  })
+  @ApiBadRequestResponse({
+      description: 'El id de la editorial no es válido',
+  })
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @Roles( 'ADMIN')
+  @Patch(':id/books/:bookId')
+  async addBookToPublisher(
+    @Param('id') id: number,
+    @Param('bookId', ParseIntPipe) bookId: number,
+  ) {
+    return this.publisherService.addBookToPublisher(id, bookId)
+  }
+
+  @ApiResponse({
+      status: 200,
+      description: 'Editorial actualizada',
+  })
+  @ApiParam({
+      name: 'id',
+      description: 'Identificador de la editorial',
+      type: String,
+  })
+  @ApiParam({
+      name: 'bookId',
+      description: 'Identificador del libro',
+      type: String,
+  })
+  @ApiNotFoundResponse({
+      description: 'Editorial no encontrada',
+  })
+  @ApiBadRequestResponse({
+      description: 'El id de la editorial no es válido',
+  })
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @Roles( 'ADMIN')
+  @Patch(':id/books/remove/:bookId')
+  async removeBookFromPublisher(
+      @Param('id') id: number,
+      @Param('bookId', ParseIntPipe) bookId: number,
+  ) {
+      return this.publisherService.removeBookFromPublisher(id, bookId)
   }
 }

@@ -3,27 +3,13 @@ import { ResponsePublisherDto } from '../dto/response-publisher.dto'
 import { Publisher } from '../entities/publisher.entity'
 import { CreatePublisherDto } from '../dto/create-publisher.dto'
 import { UpdatePublisherDto } from '../dto/update-publisher.dto'
+import {Book} from "../../books/entities/book.entity";
 
 /**
  * Mapper de Publishers
  */
 @Injectable()
 export class PublisherMapper {
-  /**
-   * Mapea un DTO de respuesta a una entidad de Publisher
-   * @param publisher ResponsePublisherDto
-   */
-  toEntity(publisher: ResponsePublisherDto): Publisher {
-    const publisherEntity = new Publisher()
-    publisherEntity.id = publisher.id
-    publisherEntity.name = publisher.name
-    publisherEntity.books = publisher.books
-    publisherEntity.image = publisher.image
-    publisherEntity.active = publisher.active
-    publisherEntity.createdAt = publisher.createdAt
-    publisherEntity.updatedAt = publisher.updatedAt
-    return publisherEntity
-  }
 
   /**
    * Mapea una entidad de Publisher a un DTO de respuesta
@@ -33,7 +19,9 @@ export class PublisherMapper {
     const publisherDTO = new ResponsePublisherDto()
     publisherDTO.id = publisher.id
     publisherDTO.name = publisher.name
-    publisherDTO.books = publisher.books
+    publisher.books.forEach((book: Book) => {
+      publisherDTO.books.push(book.id)
+    })
     publisherDTO.image = publisher.image
     publisherDTO.active = publisher.active
     publisherDTO.createdAt = publisher.createdAt

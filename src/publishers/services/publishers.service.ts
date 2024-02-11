@@ -29,6 +29,7 @@ import {
 } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
 import { PublishersNotificationsGateway } from '../../websockets/notifications/publishers-notification.gateway'
+import {Book} from "../../books/entities/book.entity";
 
 /**
  * Servicio de publishers
@@ -48,6 +49,8 @@ export class PublisherService {
   constructor(
     @InjectRepository(Publisher)
     private readonly publisherRepository: Repository<Publisher>,
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
     private readonly publisherMapper: PublisherMapper,
     private readonly storageService: StorageService,
     private readonly publisherNotificationGateway: PublishersNotificationsGateway,
@@ -70,9 +73,13 @@ export class PublisherService {
       return cache
     }
 
+    const queryBuilder = this.publisherRepository
+        .createQueryBuilder('publisher')
+        .leftJoinAndSelect('publisher.books', 'book')
+
     let pagination: Paginated<Publisher>
     try {
-      pagination = await paginate(query, this.publisherRepository, {
+      pagination = await paginate(query, queryBuilder, {
         sortableColumns: ['name', 'createdAt', 'updatedAt'],
         defaultSortBy: [['name', 'ASC']],
         searchableColumns: ['name'],
@@ -309,6 +316,52 @@ export class PublisherService {
     await this.invalidateCacheKey('publisher')
 
     return dto
+  }
+
+  /**
+   * Método que agrega un libro a un publisher
+   * @param publisherId
+   * @param bookId
+   */
+  async addBookToPublisher(publisherId: number, bookId: number) {
+    const publisher = await this.publisherRepository.findOneBy({id:publisherId})
+    if (!publisher) {
+      throw new NotFoundException(`No se encontró el publisher con id: ${publisherId}`)
+    }
+    const book = await this.bookRepository.findOneBy({id: bookId})
+    if (!book) {
+      throw new NotFoundException(`No se encontró el libro con id: ${bookId}`)
+    }
+    console.log(book, publisher)
+    publisher.books.add(book)
+    await this.publisherRepository.save(publisher)
+    const dto = this.publisherMapper.toDTO(publisher)
+    this.onChange(NotificationType.UPDATE, dto)
+    await this.invalidateCacheKey('publisher')
+    return dto
+  }
+
+  /**
+   * Método que elimina un libro de un publisher
+   * @param publisherId
+   * @param bookId
+   */
+  async removeBookFromPublisher(publisherId: number, bookId: number) {
+      const publisher = await this.publisherRepository.findOneBy({id:publisherId})
+      if (!publisher) {
+      throw new NotFoundException(`No se encontró el publisher con id: ${publisherId}`)
+      }
+      const book = await this.bookRepository.findOneBy({id: bookId})
+      if (!book) {
+      throw new NotFoundException(`No se encontró el libro con id: ${bookId}`)
+      }
+      publisher.books.delete(book)
+      const publisher_updated = await this.publisherRepository.save(publisher)
+      const dto = this.publisherMapper.toDTO(publisher_updated)
+      console.log(publisher_updated)
+      this.onChange(NotificationType.UPDATE, dto)
+      await this.invalidateCacheKey('publisher')
+      return dto
   }
 
   /**

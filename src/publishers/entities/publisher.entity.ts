@@ -2,7 +2,7 @@ import { Book } from '../../books/entities/book.entity'
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,7 +22,7 @@ export class Publisher {
   name: string
 
   @OneToMany(() => Book, (book: Book) => book.publisher)
-  books: Set<Book>
+  books: Set<Book> = new Set<Book>()
 
   @Column({type: 'varchar', length: 255, default: Publisher.IMAGE_DEFAULT})
   image: string

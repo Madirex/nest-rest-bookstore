@@ -22,7 +22,7 @@ export class ResponsePublisherDto {
     description: 'Los libros del Publisher',
     type: [Book],
   })
-  books: Set<Book>
+  books: Number[] = []
 
   @ApiProperty({
     example: 'https://www.planetadelibros.com/image.png',

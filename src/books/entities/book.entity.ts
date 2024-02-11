@@ -27,7 +27,8 @@ export class Book {
   @Column({ name: 'author', type: 'varchar', length: 255 })
   author: string
 
-  @Column({ name: 'publisher', type: 'varchar', length: 255 })
+  @ManyToOne(() => Publisher, (publisher: Publisher) => publisher.books)
+  @JoinColumn({ name: 'publisher_id' })
   publisher: Publisher
 
   @ManyToOne(() => Category, (category: Category) => category.books)
