@@ -94,10 +94,11 @@ export class OrdersService {
    */
   async findByUserId(userId: string) {
     this.logger.log(`Buscando order con userId: ${userId}`)
+
     const order = await this.orderRepository.find({ userId: userId }).exec()
-    if (!order) {
+    if (!order || order.length === 0) {
       throw new NotFoundException(
-        `No se encontró el order con userId: ${userId}`,
+        `No se encontraron pedidos con userId: ${userId}`,
       )
     }
     return order
