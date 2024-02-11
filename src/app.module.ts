@@ -1,43 +1,42 @@
 import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
 import { BooksModule } from './books/books.module'
 import { CategoriesModule } from './categories/categories.module'
 import { CacheModule } from '@nestjs/cache-manager'
 import { NotificationsModule } from './websockets/notifications/notifications.module'
 import { StorageModule } from './storage/storage.module'
 import { ClientModule } from './client/client.module'
-import { MongooseModule } from '@nestjs/mongoose'
+import { ShopsModule } from './shop/shop.module'
 import { OrdersModule } from './orders/orders.module'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
+import { ConfigModule } from '@nestjs/config'
+import { CorsConfigModule } from './config/cors/cors.module'
+import { DatabaseModule } from './config/database/database.module'
+import { PublishersModule } from './publishers/publishers.module'
 
 /**
  * Módulo principal de la aplicación
  */
 @Module({
   imports: [
+    ConfigModule.forRoot(
+      process.env.NODE_ENV === 'dev'
+        ? { envFilePath: '.env.dev' || '.env' }
+        : { envFilePath: '.env.prod' },
+    ),
+    CorsConfigModule,
+    DatabaseModule,
     CategoriesModule,
     BooksModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: 'password123',
-      database: 'BOOKSTORE_DB',
-      entities: [`${__dirname}/**/*.entity{.ts,.js}`],
-      synchronize: true,
-    }),
-    MongooseModule.forRoot(
-      'mongodb://admin:adminPassword123@localhost:27017/BOOKSTORE_DB',
-    ),
     StorageModule,
     OrdersModule,
     NotificationsModule,
     CacheModule.register(),
     ClientModule,
+    ShopsModule,
     UsersModule,
     AuthModule,
+    PublishersModule,
   ],
   controllers: [],
 })
@@ -45,5 +44,4 @@ import { AuthModule } from './auth/auth.module'
 /**
  * Módulo principal de la aplicación
  */
-export class AppModule {
-}
+export class AppModule {}

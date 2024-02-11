@@ -8,6 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Category } from '../../categories/entities/category.entity'
+import { Shop } from '../../shop/entities/shop.entity'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 /**
  * Entity Book
@@ -25,10 +27,11 @@ export class Book {
   @Column({ name: 'author', type: 'varchar', length: 255 })
   author: string
 
-  @Column({ name: 'publisher', type: 'varchar', length: 255 })
-  publisher: string //TODO: hacer relación
+  @ManyToOne(() => Publisher, (publisher: Publisher) => publisher.books)
+  @JoinColumn({ name: 'publisher_id' })
+  publisher: Publisher
 
-  @ManyToOne(() => Category, (category) => category.books)
+  @ManyToOne(() => Category, (category: Category) => category.books)
   @JoinColumn({ name: 'category_id' })
   category: Category
 
@@ -61,4 +64,8 @@ export class Book {
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean
+
+  @ManyToOne(() => Shop, (shop) => shop.books, { lazy: true })
+  @JoinColumn({ name: 'shop_id' })
+  shop: Shop
 }

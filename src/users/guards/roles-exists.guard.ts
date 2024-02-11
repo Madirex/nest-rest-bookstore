@@ -7,10 +7,21 @@ import {
 import { Observable } from 'rxjs'
 import { UsersService } from '../services/users.service'
 
+/**
+ * @description Guard para verificar que los roles de un usuario existen
+ */
 @Injectable()
 export class RolesExistsGuard implements CanActivate {
+  /**
+   * @description Constructor del guard
+   * @param usersService Servicio de usuarios
+   */
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * @description Método para verificar si los roles de un usuario existen
+   * @param context Contexto de ejecución
+   */
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -21,7 +32,6 @@ export class RolesExistsGuard implements CanActivate {
       throw new BadRequestException('El usuario debe tener al menos un rol')
     }
 
-    // Lógica para verificar si los roles son válidos
     if (!this.usersService.validateRoles(roles)) {
       throw new BadRequestException('El usuario tiene roles inválidos')
     }

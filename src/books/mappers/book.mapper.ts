@@ -6,6 +6,7 @@ import { UpdateBookDto } from '../dto/update-book.dto'
 import { ResponseBookDto } from '../dto/response-book.dto'
 import { Category } from '../../categories/entities/category.entity'
 import { Util } from '../../util/util'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 /**
  * Mapper de Books
@@ -16,8 +17,13 @@ export class BookMapper {
    * Mapea un DTO de creación de Book a una entidad de Book
    * @param createBookDto DTO de creación de Book
    * @param category Entidad de categoría
+   * @param publisher Entidad de editorial
    */
-  toEntity(createBookDto: CreateBookDto, category: Category): Book {
+  toEntity(
+    createBookDto: CreateBookDto,
+    category: Category,
+    publisher: Publisher,
+  ): Book {
     const bookEntity = plainToClass(Book, createBookDto)
     bookEntity.createdAt = new Date()
     bookEntity.updatedAt = new Date()
@@ -26,6 +32,7 @@ export class BookMapper {
       ? createBookDto.image.trim()
       : Book.IMAGE_DEFAULT
     bookEntity.category = category
+    bookEntity.publisher = publisher
     bookEntity.isActive = true
     return bookEntity
   }
@@ -35,11 +42,13 @@ export class BookMapper {
    * @param dto DTO de actualización de Book
    * @param entity Entidad de Book
    * @param category Entidad de categoría
+   * @param publisher Entidad de editorial
    */
   mapUpdateToEntity(
     dto: UpdateBookDto,
     entity: Book,
     category: Category,
+    publisher: Publisher,
   ): Book {
     const book = new Book()
     book.id = entity.id
@@ -50,6 +59,7 @@ export class BookMapper {
     book.stock = dto.stock || entity.stock
     book.image = dto.image ? dto.image.trim() : entity.image
     book.category = category || entity.category
+    book.publisher = publisher || entity.publisher
     book.isActive = entity.isActive
     return book
   }
@@ -62,6 +72,9 @@ export class BookMapper {
     const responseBookDto = plainToClass(ResponseBookDto, entity)
     if (entity && entity.category && 'name' in entity.category) {
       responseBookDto.category = entity.category.name
+    }
+    if (entity && entity.publisher) {
+      responseBookDto.publisherId = entity.publisher.id
     }
     Util.responseBookDtoAddPath(responseBookDto) //agregarle el path a la imagen
     return responseBookDto

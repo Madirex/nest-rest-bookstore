@@ -1,11 +1,14 @@
 import { Prop } from '@nestjs/mongoose'
 
-export class OrderLine {
+/**
+ * @description Schema for the orderline entity
+ */
+export class OrderlineSchema {
   @Prop({
     type: Number,
     required: true,
   })
-  idProduct: number
+  productId: number
 
   @Prop({
     type: Number,

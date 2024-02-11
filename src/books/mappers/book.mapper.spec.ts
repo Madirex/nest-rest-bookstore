@@ -7,9 +7,20 @@ import { BookMapper } from './book.mapper'
 import { CreateBookDto } from '../dto/create-book.dto'
 import { Book } from '../entities/book.entity'
 import { UpdateBookDto } from '../dto/update-book.dto'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 describe('BookMapper', () => {
   let bookMapper: BookMapper
+
+  const publisher: Publisher = {
+    id: 1,
+    name: 'Publisher',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    books: null,
+    image: 'publisher-image.jpg',
+    active: true,
+  }
 
   const existingBook: Book = {
     id: 1,
@@ -31,7 +42,16 @@ describe('BookMapper', () => {
       books: [],
     },
     author: '',
-    publisher: '0', //TODO: cambiar por datos Publisher cuando se haga la relación
+    publisher: {
+      id: 1,
+      name: 'Publisher',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      books: null,
+      image: 'publisher-image.jpg',
+      active: true,
+    },
+    shop: null,
   }
 
   beforeEach(async () => {
@@ -69,6 +89,7 @@ describe('BookMapper', () => {
       const actualBookEntity: Book = bookMapper.toEntity(
         createBookDto,
         category,
+        publisher,
       )
 
       // Assert
@@ -100,6 +121,7 @@ describe('BookMapper', () => {
       const actualBookEntity: Book = bookMapper.toEntity(
         createBookDto,
         category,
+        publisher,
       )
 
       // Assert
@@ -119,6 +141,7 @@ describe('BookMapper', () => {
       const actualBookEntity: Book = bookMapper.mapUpdateToEntity(
         updateBookDto,
         existingBook,
+        null,
         null,
       )
 
@@ -158,6 +181,7 @@ describe('BookMapper', () => {
         updateBookDto,
         existingBook,
         category,
+        publisher,
       )
 
       // Assert

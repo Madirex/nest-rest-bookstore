@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Order, OrderDocument } from '../schemas/Order'
+import { Order, OrderDocument } from '../schemas/order.schema'
 import { PaginateModel } from 'mongoose'
 import { OrdersMapper } from '../mappers/orders.mapper'
 import { CreateOrderDto } from '../dto/CreateOrderDto'
@@ -14,15 +14,26 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Book } from '../../books/entities/book.entity'
 import { Repository } from 'typeorm'
 import { Client } from '../../client/entities/client.entity'
-import { Usuario } from '../../users/entities/user.entity'
+import { User } from '../../users/entities/user.entity'
 
-export const OrdersOrderByValues: string[] = ['_id', 'idUsuario'] // Lo usamos en los pipes
-export const OrdersOrderValues: string[] = ['asc', 'desc'] // Lo usamos en los pipes
+export const OrdersOrderByValues: string[] = ['_id', 'userId']
+export const OrdersOrderValues: string[] = ['asc', 'desc']
 
+/**
+ * @description The Orders Service
+ */
 @Injectable()
 export class OrdersService {
   private logger = new Logger(OrdersService.name)
 
+  /**
+   * @description The Orders Service constructor
+   * @param orderRepository The order repository
+   * @param bookRepository The book repository
+   * @param clientRepository The client repository
+   * @param usersRepository The users repository
+   * @param ordersMapper The orders mapper
+   */
   constructor(
     @InjectModel(Order.name)
     private orderRepository: PaginateModel<OrderDocument>,
@@ -30,11 +41,18 @@ export class OrdersService {
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-    @InjectRepository(Usuario)
-    private readonly usuariosRepository: Repository<Usuario>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     private readonly ordersMapper: OrdersMapper,
   ) {}
 
+  /**
+   * Busca todos los pedidos
+   * @param page El número de página
+   * @param limit El límite de resultados por página
+   * @param orderBy El campo por el que ordenar
+   * @param order El orden de ordenación
+   */
   async findAll(page: number, limit: number, orderBy: string, order: string) {
     this.logger.log(
       `Buscando todos los pedidos con paginación y filtros: ${JSON.stringify({
@@ -57,24 +75,48 @@ export class OrdersService {
     return await this.orderRepository.paginate({}, options)
   }
 
+  /**
+   * Busca un pedido por su ID
+   * @param id El ID del pedido
+   */
   async findOne(id: string) {
-    this.logger.log(`Buscando pedido con id: ${id}`)
+    this.logger.log(`Buscando order con id: ${id}`)
     const order = await this.orderRepository.findById(id).exec()
     if (!order) {
-      throw new NotFoundException(`No se encontró el pedido con id: ${id}`)
+      throw new NotFoundException(`No se encontró el order con id: ${id}`)
     }
     return order
   }
 
+  /**
+   * Busca todos los pedidos de un usuario
+   * @param userId El ID del usuario
+   */
+  async findByUserId(userId: string) {
+    this.logger.log(`Buscando order con userId: ${userId}`)
+
+    const order = await this.orderRepository.find({ userId: userId }).exec()
+    if (!order || order.length === 0) {
+      throw new NotFoundException(
+        `No se encontraron pedidos con userId: ${userId}`,
+      )
+    }
+    return order
+  }
+
+  /**
+   * Crea un nuevo pedido
+   * @param createOrderDto Los datos del pedido a crear
+   */
   async create(createOrderDto: CreateOrderDto) {
     this.logger.log(
-      `Creando pedido con datos: ${JSON.stringify(createOrderDto)}`,
+      `Creando order con datos: ${JSON.stringify(createOrderDto)}`,
     )
     const order = this.ordersMapper.toEntity(createOrderDto)
 
-    await this.checkPedido(order)
+    await this.checkOrder(order)
 
-    const orderToSave = await this.reserveStockPedidos(order)
+    const orderToSave = await this.reserveStockOrders(order)
 
     orderToSave.createdAt = new Date()
     orderToSave.updatedAt = new Date()
@@ -82,158 +124,177 @@ export class OrdersService {
     return await this.orderRepository.create(orderToSave)
   }
 
+  /**
+   * Actualiza un pedido
+   * @param id El ID del pedido
+   * @param updateOrderDto Los datos del pedido a actualizar
+   */
   async update(id: string, updateOrderDto: UpdateOrderDto) {
     this.logger.log(
-      `Actualizando pedido con id ${id} y ${JSON.stringify(updateOrderDto)}`,
+      `Actualizando order con id ${id} y ${JSON.stringify(updateOrderDto)}`,
     )
 
-    const pedidoToUpdate = await this.orderRepository.findById(id).exec()
-    if (!pedidoToUpdate) {
-      throw new NotFoundException(`Pedido con id ${id} no encontrado`)
+    const orderToUpdate = await this.orderRepository.findById(id).exec()
+    if (!orderToUpdate) {
+      throw new NotFoundException(`Order con id ${id} no encontrado`)
     }
 
-    const pedidoToBeSaved = this.ordersMapper.toEntity(updateOrderDto)
+    const orderToBeSaved = this.ordersMapper.toEntity(updateOrderDto)
 
-    await this.returnStockPedidos(pedidoToBeSaved)
+    await this.returnStockOrders(orderToBeSaved)
 
-    await this.checkPedido(pedidoToBeSaved)
-    const pedidoToSave = await this.reserveStockPedidos(pedidoToBeSaved)
+    await this.checkOrder(orderToBeSaved)
+    const orderToSave = await this.reserveStockOrders(orderToBeSaved)
 
-    pedidoToSave.updatedAt = new Date()
+    orderToSave.updatedAt = new Date()
 
     return await this.orderRepository
-      .findByIdAndUpdate(id, pedidoToSave, { new: true })
+      .findByIdAndUpdate(id, orderToSave, { new: true })
       .exec()
   }
 
+  /**
+   * Elimina un pedido
+   * @param id El ID del pedido
+   */
   async remove(id: string) {
-    this.logger.log(`Eliminando pedido con id ${id}`)
+    this.logger.log(`Eliminando order con id ${id}`)
 
-    const pedidoToDelete = await this.orderRepository.findById(id).exec()
-    if (!pedidoToDelete) {
-      throw new NotFoundException(`Pedido con id ${id} no encontrado`)
+    const orderToDelete = await this.orderRepository.findById(id).exec()
+    if (!orderToDelete) {
+      throw new NotFoundException(`Order con id ${id} no encontrado`)
     }
-    await this.returnStockPedidos(pedidoToDelete)
+    await this.returnStockOrders(orderToDelete)
     await this.orderRepository.findByIdAndDelete(id).exec()
   }
 
-  private async checkPedido(order: Order): Promise<void> {
-    this.logger.log(`Comprobando pedido ${JSON.stringify(order)}`)
+  /**
+   * Comprueba si existe un usuario
+   * @param userId El ID del usuario
+   */
+  async userExists(userId: string): Promise<boolean> {
+    this.logger.log(`Comprobando si existe el usuario ${userId}`)
+    const user = await this.usersRepository.findOneBy({ id: userId })
+    return !!user
+  }
+
+  /**
+   * Comprueba si existe un cliente
+   * @param clientId El ID del cliente
+   */
+  async clientExists(clientId: string): Promise<boolean> {
+    this.logger.log(`Comprobando si existe el cliente ${clientId}`)
+    const client = await this.clientRepository.findOneBy({ id: clientId })
+    return !!client
+  }
+
+  /**
+   * Comprueba si un pedido es válido
+   * @param order El pedido a comprobar
+   * @private Método privado
+   */
+  private async checkOrder(order: Order): Promise<void> {
+    this.logger.log(`Comprobando order ${JSON.stringify(order)}`)
 
     const client = await this.clientRepository.findOneBy({
-      id: order.idClient,
+      id: order.clientId,
     })
     if (!client) {
       throw new BadRequestException(
-        `El cliente con id ${order.idClient} no existe`,
+        `El cliente con id ${order.clientId} no existe`,
       )
     }
 
-    const usuario = await this.usuariosRepository.findOneBy({
-      id: order.idUser,
+    const user = await this.usersRepository.findOneBy({
+      id: order.userId,
     })
 
-    if (!usuario) {
+    if (!user) {
       throw new BadRequestException(
-        `El usuario con id ${order.idUser} no existe`,
+        `El usuario con id ${order.userId} no existe`,
       )
     }
 
     if (!order.orderLines || order.orderLines.length === 0) {
       throw new BadRequestException(
-        'No se han agregado lineas de pedido al pedido actual',
+        'No se han agregado líneas de pedido al pedido actual',
       )
     }
 
-    for (const lineaPedido of order.orderLines) {
-      const producto = await this.bookRepository.findOneBy({
-        id: lineaPedido.idProduct,
+    for (const orderLine of order.orderLines) {
+      const book = await this.bookRepository.findOneBy({
+        id: orderLine.productId,
       })
-      if (!producto) {
+      if (!book) {
         throw new BadRequestException(
-          `El producto con id ${lineaPedido.idProduct} no existe`,
+          `El libro con id ${orderLine.productId} no existe`,
         )
       }
-      if (producto.stock < lineaPedido.quantity && lineaPedido.quantity > 0) {
+      if (book.stock < orderLine.quantity && orderLine.quantity > 0) {
         throw new BadRequestException(
-          `La cantidad solicitada no es válida o no hay suficiente stock del producto ${producto.id}`,
+          `La cantidad solicitada no es válida o no hay suficiente stock del libro ${book.id}`,
         )
       }
 
-      const precioProducto = Number(producto.price).toFixed(2)
-      const precioLineaPedido = Number(lineaPedido.price).toFixed(2)
-      if (precioProducto !== precioLineaPedido) {
+      const bookPrice = Number(book.price).toFixed(2)
+      const bookOrderLinePrice = Number(orderLine.price).toFixed(2)
+      if (bookPrice !== bookOrderLinePrice) {
         throw new BadRequestException(
-          `El precio del producto ${producto.id} del pedido no coincide con el precio actual del producto`,
+          `El precio del libro ${book.id} del pedido no coincide con el precio actual del producto`,
         )
       }
     }
   }
 
-  private async reserveStockPedidos(order: Order): Promise<Order> {
-    this.logger.log(`Reservando stock del pedido: ${order}`)
+  /**
+   * Reserva el stock de un pedido
+   * @param order El pedido a reservar
+   * @private Método privado
+   */
+  private async reserveStockOrders(order: Order): Promise<Order> {
+    this.logger.log(`Reservando stock del order: ${order}`)
 
     if (!order.orderLines || order.orderLines.length === 0) {
-      throw new BadRequestException(`No se han agregado lineas de pedido`)
+      throw new BadRequestException(`No se han agregado líneas de pedido`)
     }
 
-    for (const lineaPedido of order.orderLines) {
-      const producto = await this.bookRepository.findOneBy({
-        id: lineaPedido.idProduct,
+    for (const orderLine of order.orderLines) {
+      const book = await this.bookRepository.findOneBy({
+        id: orderLine.productId,
       })
-      console.log(producto, lineaPedido.quantity, lineaPedido)
-      producto.stock -= Number(lineaPedido.quantity)
-      console.log(producto, lineaPedido)
-      await this.bookRepository.save(producto)
-      lineaPedido.total = lineaPedido.quantity * lineaPedido.price
+      book.stock -= Number(orderLine.quantity)
+      await this.bookRepository.save(book)
+      orderLine.total = orderLine.quantity * orderLine.price
     }
 
     order.total = order.orderLines.reduce(
-      (sum, lineaPedido) => sum + lineaPedido.quantity * lineaPedido.price,
+      (sum, orderLine) => sum + orderLine.quantity * orderLine.price,
       0,
     )
     order.totalItems = order.orderLines.reduce(
-      (sum, lineaPedido) => sum + lineaPedido.quantity,
+      (sum, orderLine) => sum + orderLine.quantity,
       0,
     )
 
     return order
   }
 
-  private async returnStockPedidos(order: Order): Promise<Order> {
+  /**
+   * Devuelve el stock de un pedido
+   * @param order El pedido a devolver
+   * @private Método privado
+   */
+  private async returnStockOrders(order: Order): Promise<Order> {
     this.logger.log(`Retornando stock del pedido: ${order}`)
     if (order.orderLines) {
-      for (const lineaPedido of order.orderLines) {
-        const producto = await this.bookRepository.findOneBy({
-          id: lineaPedido.idProduct,
+      for (const orderLine of order.orderLines) {
+        const book = await this.bookRepository.findOneBy({
+          id: orderLine.productId,
         })
-        producto.stock += lineaPedido.quantity
-        await this.bookRepository.save(producto)
+        book.stock += orderLine.quantity
+        await this.bookRepository.save(book)
       }
     }
     return order
-  }
-
-  async findByIdUser(idUser: number) {
-    this.logger.log(`Buscando pedido con idUser: ${idUser}`)
-    const order = await this.orderRepository.find({ idUser: idUser }).exec()
-    if (!order) {
-      throw new NotFoundException(
-        `No se encontró el pedido con idUser: ${idUser}`,
-      )
-    }
-    return order
-  }
-
-  async userExists(idUsuario: number): Promise<boolean> {
-    this.logger.log(`Comprobando si existe el usuario ${idUsuario}`)
-    const usuario = await this.usuariosRepository.findOneBy({ id: idUsuario })
-    return !!usuario
-  }
-
-  async clientExists(idClient: string): Promise<boolean> {
-    this.logger.log(`Comprobando si existe el cliente ${idClient}`)
-    const client = await this.clientRepository.findOneBy({ id: idClient })
-    return !!client
   }
 }

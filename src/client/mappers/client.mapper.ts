@@ -4,10 +4,13 @@ import { Client } from '../entities/client.entity'
 import { CreateClientDto } from '../dto/create-client.dto'
 import { UpdateClientDto } from '../dto/update-client.dto'
 
+/**
+ * Clase que se encarga de mapear los datos de los clientes
+ */
 @Injectable()
 export class ClientMapper {
   /**
-   * Mapea un dto de respuesta a una entidad de Client
+   * Mapea un DTO de respuesta a una entidad de Client
    * @param client ResponseClientDto
    * @returns Client entity
    */

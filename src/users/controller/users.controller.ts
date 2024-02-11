@@ -23,7 +23,6 @@ import { ApiExcludeController } from '@nestjs/swagger'
 import { UsersService } from '../services/users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { UpdateUserDto } from '../dto/update-user.dto'
-import { Paginate, PaginateQuery } from 'nestjs-paginate'
 
 @Controller('users')
 @UseInterceptors(CacheInterceptor)
@@ -36,9 +35,9 @@ export class UsersController {
 
   @Get()
   @Roles('ADMIN')
-  async findAll(@Paginate() query: PaginateQuery) {
+  async findAll() {
     this.logger.log('findAll')
-    return await this.usersService.findAll(query)
+    return await this.usersService.findAll()
   }
 
   @Get(':id')

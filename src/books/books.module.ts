@@ -8,6 +8,7 @@ import { Category } from '../categories/entities/category.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Book } from './entities/book.entity'
 import { NotificationsModule } from '../websockets/notifications/notifications.module'
+import { Publisher } from '../publishers/entities/publisher.entity'
 
 /**
  * Módulo de Books
@@ -16,6 +17,7 @@ import { NotificationsModule } from '../websockets/notifications/notifications.m
   imports: [
     TypeOrmModule.forFeature([Book]),
     TypeOrmModule.forFeature([Category]),
+    TypeOrmModule.forFeature([Publisher]),
     StorageModule,
     NotificationsModule,
     CacheModule.register(),

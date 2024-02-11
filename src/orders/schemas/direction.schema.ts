@@ -1,6 +1,9 @@
 import { Prop } from '@nestjs/mongoose'
 
-export class Direction {
+/**
+ * @description Schema for the direction entity
+ */
+export class DirectionSchema {
   @Prop({
     type: String,
     required: true,

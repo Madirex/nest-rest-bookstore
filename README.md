@@ -37,7 +37,7 @@ POSTGRES_PORT=5432
 
 ## Descripción
 
-Bienvenido a la API REST de NULLERS BOOKS, una tienda de libros en línea que te permite realizar diversas operaciones, como consultar libros, gestionar usuarios, administrar tiendas y realizar pedidos. Nuestra API está diseñada para ser segura, eficiente y escalable, proporcionando una interfaz robusta para interactuar con la plataforma de comercio de libros.
+Bienvenido a la API REST de NULLERS BOOKS, una tienda de libros en línea que te permite realizar diversas operaciones, como consultar libros, gestionar usuarios, administrar tiendas y realizar orders. Nuestra API está diseñada para ser segura, eficiente y escalable, proporcionando una interfaz robusta para interactuar con la plataforma de comercio de libros.
 
 ### Estructura del Proyecto
 
@@ -71,21 +71,21 @@ El libro cuenta con un stock y un precio del libro, así como cada uno de los el
 
 ### Modelo relacional:
 
-Hemos utilizado un modelo relacional para los pedidos y líneas de pedido.
+Hemos utilizado un modelo relacional para los orders y líneas de order.
 
 ### SQL:
 
 Para el resto de entidades, hemos utilizado SQL.
 
-La elección de utilizar un modelo relacional para los pedidos y líneas de pedido, y SQL para el resto de entidades, se basa en consideraciones específicas relacionadas con la estructura y las operaciones previstas en el sistema.
+La elección de utilizar un modelo relacional para los orders y líneas de order, y SQL para el resto de entidades, se basa en consideraciones específicas relacionadas con la estructura y las operaciones previstas en el sistema.
 
-### Modelo Relacional para Pedidos y Líneas de Pedido:
+### Modelo Relacional para Orders y Líneas de OrderSchema:
 
 **Relaciones Complejas:**
-El modelo relacional es especialmente adecuado cuando existen relaciones complejas entre las entidades. En el caso de los pedidos y líneas de pedido, donde se pueden tener múltiples productos asociados a un solo pedido, el modelo relacional proporciona una representación clara y eficiente de estas relaciones.
+El modelo relacional es especialmente adecuado cuando existen relaciones complejas entre las entidades. En el caso de los orders y líneas de order, donde se pueden tener múltiples libros asociados a un solo order, el modelo relacional proporciona una representación clara y eficiente de estas relaciones.
 
 **Consistencia y Normalización:**
-La normalización inherente al modelo relacional ayuda a mantener la consistencia y la integridad de los datos. Al gestionar pedidos, donde es crucial mantener la coherencia de la información, la normalización contribuye a evitar redundancias y posibles incongruencias.
+La normalización inherente al modelo relacional ayuda a mantener la consistencia y la integridad de los datos. Al gestionar orders, donde es crucial mantener la coherencia de la información, la normalización contribuye a evitar redundancias y posibles incongruencias.
 
 ### SQL para el Resto de Entidades:
 
@@ -139,15 +139,15 @@ SQL proporciona un lenguaje poderoso para la consulta y manipulación de datos. 
 
 ### Orders:
 
-- **GET /api/orders/{id}:** Obtiene un pedido dado un ID.
-- **PUT /api/orders/{id}:** Actualiza un pedido.
-- **DELETE /api/orders/{id}:** Elimina un pedido.
-- **PUT /api/orders/delete/{id}:** Elimina un pedido de manera simulada.
-- **GET /api/orders:** Obtiene todos los pedidos.
-- **POST /api/orders:** Crea un pedido.
-- **GET /api/orders/user/{id}:** Obtiene un pedido dado el ID de un usuario.
-- **GET /api/orders/shop/{id}:** Obtiene un pedido dado el ID de una tienda.
-- **GET /api/orders/client/{id}:** Obtiene un pedido dado el ID de un cliente.
+- **GET /api/orders/{id}:** Obtiene un order dado un ID.
+- **PUT /api/orders/{id}:** Actualiza un order.
+- **DELETE /api/orders/{id}:** Elimina un order.
+- **PUT /api/orders/delete/{id}:** Elimina un order de manera simulada.
+- **GET /api/orders:** Obtiene todos los orders.
+- **POST /api/orders:** Crea un order.
+- **GET /api/orders/user/{id}:** Obtiene un order dado el ID de un usuario.
+- **GET /api/orders/shop/{id}:** Obtiene un order dado el ID de una tienda.
+- **GET /api/orders/client/{id}:** Obtiene un order dado el ID de un cliente.
 
 ### Clients:
 

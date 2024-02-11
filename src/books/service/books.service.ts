@@ -31,6 +31,7 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 /**
  * Servicio de Books
@@ -43,6 +44,7 @@ export class BooksService {
    * Constructor
    * @param bookRepository Repositorio de Books
    * @param categoryRepository Repositorio de categorías
+   * @param publisherRepository Repositorio de editoriales
    * @param bookMapper Mapper de Books
    * @param storageService Servicio de Storage
    * @param booksNotificationsGateway Gateway de notificaciones de Books
@@ -53,6 +55,8 @@ export class BooksService {
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Publisher)
+    private readonly publisherRepository: Repository<Publisher>,
     private readonly bookMapper: BookMapper,
     private readonly storageService: StorageService,
     private readonly booksNotificationsGateway: BooksNotificationsGateway,
@@ -83,12 +87,17 @@ export class BooksService {
     let pagination: Paginated<Book>
     try {
       pagination = await paginate(query, queryBuilder, {
-        sortableColumns: ['name', 'category', 'price', 'stock'],
+        sortableColumns: ['name', 'category', 'price', 'stock', 'publisher'],
         defaultSortBy: [['name', 'ASC']],
-        searchableColumns: ['name', 'category', 'price', 'stock'],
+        searchableColumns: ['name', 'category', 'price', 'stock', 'publisher'],
         filterableColumns: {
           name: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
           category: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
+          publisher: [
+            FilterOperator.ILIKE,
+            FilterSuffix.NOT,
+            FilterOperator.EQ,
+          ],
           price: true,
           stock: true,
           isActive: [FilterOperator.ILIKE, FilterSuffix.NOT, FilterOperator.EQ],
@@ -137,7 +146,7 @@ export class BooksService {
     }
     const book = await this.bookRepository.findOne({
       where: { id },
-      relations: ['category'],
+      relations: ['category', 'publisher'],
     })
 
     if (!book) {
@@ -171,18 +180,23 @@ export class BooksService {
     }
 
     let category = null
+    let publisher = null
     if (createBookDto.category) {
       category = await this.getCategoryByName(createBookDto.category)
     }
-    const book = this.bookMapper.toEntity(createBookDto, category)
+    if (createBookDto.publisherId) {
+      publisher = await this.getPublisherByName(createBookDto.publisherId)
+    }
+    const book = this.bookMapper.toEntity(createBookDto, category, publisher)
     if (book.category == null) {
       delete book.category
+    }
+    if (book.publisher == null) {
+      throw new BadRequestException('Editorial no encontrada')
     }
 
     const dto = this.bookMapper.mapEntityToResponseDto(book)
     this.onChange(NotificationType.CREATE, dto)
-
-    book.publisher = 'no implementado todavía' //TODO: implementar relación con publisher
 
     const res = await this.bookRepository.save({
       ...book,
@@ -251,23 +265,37 @@ export class BooksService {
     }
 
     let category = null
+    let publisher = null
 
     if (updateBookDto.category) {
       category = await this.getCategoryByName(updateBookDto.category)
+    }
+
+    if (updateBookDto.publisherId) {
+      publisher = await this.getPublisherByName(updateBookDto.publisherId)
     }
 
     const book = this.bookMapper.mapUpdateToEntity(
       updateBookDto,
       bookToUpdate,
       category,
+      publisher,
     )
 
     if (bookToUpdate.category != null) {
       delete bookToUpdate.category
     }
 
+    if (bookToUpdate.publisher != null) {
+      delete bookToUpdate.publisher
+    }
+
     if (book.category != null) {
       delete book.category
+    }
+
+    if (book.publisher != null) {
+      delete book.publisher
     }
 
     const dto = this.bookMapper.mapEntityToResponseDto(book)
@@ -346,6 +374,21 @@ export class BooksService {
       .createQueryBuilder()
       .where('LOWER(name) = LOWER(:name)', {
         name: name.toLowerCase(),
+      })
+      .getOne()
+  }
+
+  /**
+   * Retorna una editorial dado el nombre
+   * @param id Id de la editorial
+   * @private Función privada
+   * @returns Editorial encontrada
+   */
+  async getPublisherByName(id: number) {
+    return await this.publisherRepository
+      .createQueryBuilder()
+      .where('id = :id', {
+        id: id,
       })
       .getOne()
   }

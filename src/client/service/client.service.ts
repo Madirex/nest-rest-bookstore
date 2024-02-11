@@ -32,18 +32,21 @@ import {
 import { hash } from 'typeorm/util/StringUtils'
 import { OrdersService } from '../../orders/services/orders.service'
 
+/**
+ * Servicio de clientes
+ */
 @Injectable()
 export class ClientService {
   private readonly logger = new Logger(ClientService.name)
 
   /**
    * @description Constructor del servicio
-   * @param clientRepository
-   * @param clientMapper
-   * @param storageService
-   * @param ordersService
-   * @param clientNotificationGateway
-   * @param cacheManager
+   * @param clientRepository repositorio de clientes
+   * @param clientMapper mapeador de clientes
+   * @param storageService servicio de almacenamiento
+   * @param ordersService servicio de pedidos
+   * @param clientNotificationGateway cliente de notificaciones
+   * @param cacheManager cache manager
    */
   constructor(
     @InjectRepository(Client)
@@ -57,7 +60,7 @@ export class ClientService {
 
   /**
    * Método que lista todos los clientes
-   * @param query
+   * @param query Consulta de paginación
    * @returns Lista de clientes paginada
    */
   async findAll(query: PaginateQuery) {
@@ -111,8 +114,8 @@ export class ClientService {
   }
 
   /**
-   * Método que busca un cliente por id
-   * @param id
+   * Método que busca un cliente por su id
+   * @param id Identificador del cliente
    * @returns Cliente encontrado
    */
   async findOne(id: string) {
@@ -137,7 +140,7 @@ export class ClientService {
 
   /**
    * Método que busca un cliente por email
-   * @param email
+   * @param email Email del cliente
    * @returns Cliente encontrado
    */
   async findByEmail(email: string) {
@@ -163,7 +166,7 @@ export class ClientService {
 
   /**
    * Método que crea un cliente
-   * @param createClientDto
+   * @param createClientDto Datos del cliente a crear
    * @returns Cliente creado
    */
   async create(createClientDto: CreateClientDto) {
@@ -193,8 +196,8 @@ export class ClientService {
 
   /**
    * Método que actualiza un cliente
-   * @param id
-   * @param updateClientDto
+   * @param id Identificador del cliente
+   * @param updateClientDto Datos del cliente a actualizar
    * @returns Cliente actualizado
    */
   async update(id: string, updateClientDto: UpdateClientDto) {
@@ -229,7 +232,7 @@ export class ClientService {
 
   /**
    * Método que elimina un cliente
-   * @param id
+   * @param id Identificador del cliente
    */
   async remove(id: string) {
     const client = await this.clientRepository.findOneBy({ id })
@@ -241,8 +244,8 @@ export class ClientService {
 
     const hasOrders = await this.ordersService.clientExists(id)
     if (hasOrders) {
-      this.logger.warn(`El cliente con id: ${id} tiene pedidos`)
-      throw new BadRequestException(`El cliente con id: ${id} tiene pedidos`)
+      this.logger.warn(`El cliente con id: ${id} tiene orders`)
+      throw new BadRequestException(`El cliente con id: ${id} tiene orders`)
     }
 
     this.logger.log(`Eliminando cliente con id: ${id}`)

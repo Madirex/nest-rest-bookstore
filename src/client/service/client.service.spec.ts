@@ -10,11 +10,10 @@ import { ClientMapper } from '../mappers/client.mapper'
 
 describe('ClientService', () => {
   let service: ClientService
-  let clientRepository : Repository<Client>
-  let storageService : StorageService
-  let ordersService : OrdersService
+  let clientRepository: Repository<Client>
+  let storageService: StorageService
+  let ordersService: OrdersService
   let clientNotificationGateway: ClientNotificationsGateway
-
 
   const clientMapperMock = {
     toEntity: jest.fn(),
