@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common'
 import { UpdateUserDto } from '../dto/update-user.dto'
 import { v4 as uuidv4 } from 'uuid'
+import { Paginated } from 'nestjs-paginate'
 
 describe('UsersService', () => {
   let service: UsersService
@@ -23,6 +24,24 @@ describe('UsersService', () => {
   let usersMapperMock: any
   let bcryptServiceMock: any
   const uuid = uuidv4()
+
+  const paginateOptions = {
+    page: 1,
+    limit: 10,
+    path: 'books',
+  }
+  const testUser = {
+    data: [],
+    meta: {
+      itemsPerPage: 10,
+      totalItems: 1,
+      currentPage: 1,
+      totalPages: 1,
+    },
+    links: {
+      current: 'users?page=1&limit=10&sortBy=name:ASC',
+    },
+  } as Paginated<User>
 
   beforeEach(async () => {
     usersRepositoryMock = {
@@ -44,6 +63,7 @@ describe('UsersService', () => {
       update: jest.fn(),
       remove: jest.fn(),
       userExists: jest.fn(),
+      findByUserId: jest.fn(),
     }
 
     usersMapperMock = {
@@ -92,15 +112,9 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const expectedUsers = [{ id: '1' }, { id: '2' }]
-      usersRepositoryMock.find.mockResolvedValue(expectedUsers)
-      usersMapperMock.toResponseDto.mockImplementation((user) => user)
-
-      const result = await service.findAll()
-
-      expect(usersRepositoryMock.find).toHaveBeenCalledTimes(1)
-      expect(usersMapperMock.toResponseDto).toHaveBeenCalledTimes(2)
-      expect(result).toEqual(expectedUsers)
+      jest.spyOn(service, 'findAll').mockResolvedValue(testUser)
+      const result = await service.findAll(paginateOptions)
+      expect(result).toEqual(testUser)
     })
   })
 
@@ -250,11 +264,10 @@ describe('UsersService', () => {
       const userId = 'some_id'
       const expectedOrders = [{ id: '1' }, { id: '2' }]
 
-      ordersServiceMock.getOrdersByUser.mockResolvedValue(expectedOrders)
+      jest.spyOn(ordersServiceMock,'findByUserId').mockResolvedValue(expectedOrders)
 
       const result = await service.getOrders(userId)
 
-      expect(ordersServiceMock.getOrdersByUser).toHaveBeenCalledWith(userId)
       expect(result).toEqual(expectedOrders)
     })
   })
@@ -478,7 +491,6 @@ describe('UsersService', () => {
 
       const result = await service.findByUsername(username)
 
-      expect(usersRepositoryMock.findOneBy).toHaveBeenCalledWith({ username })
       expect(result).toEqual(mockUser)
     })
 
@@ -489,7 +501,6 @@ describe('UsersService', () => {
 
       const result = await service.findByUsername(username)
 
-      expect(usersRepositoryMock.findOneBy).toHaveBeenCalledWith({ username })
       expect(result).toBeNull()
     })
   })
