@@ -30,7 +30,7 @@ describe('BooksController (e2e)', () => {
     name: 'Book1',
   }
 
-  const updateBookDto: UpdateBookDto = {}
+  const updateBookDto: UpdateBookDto = { author: '', name: '', publisherId: 0 }
 
   const mockBooksService = {
     findAll: jest.fn(),

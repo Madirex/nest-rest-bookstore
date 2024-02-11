@@ -75,7 +75,7 @@ export class Util {
       ? `${process.env.API_HOST}`
       : 'localhost'
 
-    const isHttps = process.env.API_HTTPS ? process.env.API_HTTPS : false
+    const isHttps = process.env.API_HTTPS ? process.env.API_HTTPS : true
     let protocol = 'http'
 
     if (isHttps) {
