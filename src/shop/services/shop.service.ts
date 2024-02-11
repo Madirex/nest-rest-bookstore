@@ -201,6 +201,16 @@ export class ShopsService {
       throw new NotFoundException(`Shop con ID: ${id} no encontrada`)
     }
 
+    // comprobar nombre
+    if (
+      shopToUpdate.name != updateShopDto.name &&
+      (await this.getByName(updateShopDto.name))
+    ) {
+      throw new BadRequestException(
+        `Shop con nombre: ${updateShopDto.name} ya existe`,
+      )
+    }
+
     const updatedShop = this.shopMapper.mapUpdateToEntity(
       updateShopDto,
       shopToUpdate,

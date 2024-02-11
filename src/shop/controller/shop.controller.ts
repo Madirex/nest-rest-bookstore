@@ -7,6 +7,9 @@ import {
   Logger,
   NotFoundException,
   Param,
+  ParseIntPipe,
+  ParseUUIDPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -311,8 +314,8 @@ export class ShopsController {
     description: 'Tienda o libro no encontrado',
   })
   async removeBookFromShop(
-    @Param('shopId') shopId: string,
-    @Param('bookId') bookId: number,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('bookId', ParseIntPipe) bookId: number,
   ) {
     this.logger.log(
       `Eliminando libro con ID ${bookId} de la tienda con ID ${shopId}`,
@@ -325,7 +328,7 @@ export class ShopsController {
    * @param shopId id de la tienda
    * @param clientId id del cliente
    */
-  @Post(':shopId/clients/:clientId')
+  @Patch(':shopId/clients/:clientId')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @Roles('ADMIN')
@@ -348,8 +351,8 @@ export class ShopsController {
     description: 'Tienda o cliente no encontrado',
   })
   async addClientToShop(
-    @Param('shopId') shopId: string,
-    @Param('clientId') clientId: string,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('clientId', ParseUUIDPipe) clientId: string,
   ) {
     this.logger.log(
       `Añadiendo cliente con ID ${clientId} a la tienda con ID ${shopId}`,
@@ -385,8 +388,8 @@ export class ShopsController {
     description: 'Tienda o cliente no encontrado',
   })
   async removeClientFromShop(
-    @Param('shopId') shopId: string,
-    @Param('clientId') clientId: string,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('clientId', ParseUUIDPipe) clientId: string,
   ) {
     this.logger.log(
       `Eliminando cliente con ID ${clientId} de la tienda con ID ${shopId}`,
@@ -399,7 +402,7 @@ export class ShopsController {
    * @param shopId id de la tienda
    * @param bookId id del libro
    */
-  @Post(':shopId/books/:bookId')
+  @Patch(':shopId/books/:bookId')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @Roles('ADMIN')
@@ -422,8 +425,8 @@ export class ShopsController {
     description: 'Tienda o libro no encontrado',
   })
   async addBookToShop(
-    @Param('shopId') shopId: string,
-    @Param('bookId') bookId: number,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('bookId', ParseIntPipe) bookId: number,
   ) {
     this.logger.log(
       `Añadiendo libro con ID ${bookId} a la tienda con ID ${shopId}`,

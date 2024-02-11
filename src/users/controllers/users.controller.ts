@@ -20,7 +20,14 @@ import { Roles, RolesAuthGuard } from '../../auth/guards/roles-auth.guard'
 import { UpdateUserDto } from '../dto/update-user.dto'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { IdValidatePipe } from '../../orders/pipes/id-validate.pipe'
-import { ApiBadRequestResponse, ApiBody, ApiNotFoundResponse, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
 import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
 import { Paginate, PaginateQuery } from 'nestjs-paginate'
@@ -39,8 +46,7 @@ export class UsersController {
    * @description Constructor del controlador
    * @param usersService Servicio de usuarios
    */
-  constructor(private readonly usersService: UsersService) {
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   /**
    * @description Devuelve todos los usuarios
@@ -51,7 +57,6 @@ export class UsersController {
     status: 200,
     description: 'Usuarios encontrados',
   })
-
   async findAll(@Paginate() query: PaginateQuery) {
     this.logger.log('findAll')
     return await this.usersService.findAll(query)
@@ -78,7 +83,7 @@ export class UsersController {
   @ApiBadRequestResponse({
     description: 'El id del usuario no es válido',
   })
-  async findOne(id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     this.logger.log(`findOne: ${id}`)
     return await this.usersService.findOne(id)
   }
@@ -362,5 +367,31 @@ export class UsersController {
   ) {
     this.logger.log(`Eliminando order con id ${id}`)
     await this.usersService.removeOrder(id, request.user.id)
+  }
+
+  /**
+   * @description Elimina un usuario
+   */
+  @Delete(':id')
+  @HttpCode(204)
+  @Roles('ADMIN')
+  @ApiResponse({
+    status: 204,
+    description: 'Usuario eliminado',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del usuario',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Usuario no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del usuario no es válido',
+  })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    this.logger.log(`Eliminando usuario con id ${id}`)
+    await this.usersService.remove(id)
   }
 }

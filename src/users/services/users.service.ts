@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { ILike, Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
 import { UsersMapper } from '../mappers/users.mapper'
 import { CreateUserDto } from '../dto/create-user.dto'
@@ -67,9 +67,18 @@ export class UsersService {
    */
   async findOne(id: string) {
     this.logger.log(`findOne: ${id}`)
-    return this.usersMapper.toResponseDto(
-      await this.usersRepository.findOneBy({ id }),
-    )
+
+    if (!id) {
+      throw new BadRequestException('El id del usuario no es válido')
+    }
+
+    const user = await this.usersRepository.findOneBy({ id })
+
+    if (!user) {
+      throw new NotFoundException(`User con id ${id} no encontrado`)
+    }
+
+    return this.usersMapper.toResponseDto(user)
   }
 
   /**
@@ -121,7 +130,7 @@ export class UsersService {
    */
   async findByUsername(username: string) {
     this.logger.log(`findByUsername: ${username}`)
-    return await this.usersRepository.findOneBy({ username })
+    return await this.usersRepository.findOneBy({ username: ILike(username) })
   }
 
   /**
@@ -305,5 +314,20 @@ export class UsersService {
   private async findByEmail(email: string) {
     this.logger.log(`findByEmail: ${email}`)
     return await this.usersRepository.findOneBy({ email })
+  }
+
+  /**
+   * @description Elimina un usuario
+   * @param id Id del usuario
+   * @private Método privado
+   */
+  async remove(id: string) {
+    this.logger.log(`Eliminando user con id ${id}`)
+
+    //borrado lógico
+    const user = await this.usersRepository.findOneBy({ id })
+    user.isDeleted = true
+
+    return await this.usersRepository.save(user)
   }
 }
