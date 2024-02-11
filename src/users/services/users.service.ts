@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Usuario } from '../entities/user.entity'
@@ -16,6 +10,9 @@ import { UpdateUserDto } from '../dto/update-user.dto'
 import { OrdersService } from '../../orders/services/orders.service'
 import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
 import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
+import { FilterOperator, paginate, PaginateQuery } from 'nestjs-paginate'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class UsersService {
@@ -29,13 +26,37 @@ export class UsersService {
     private readonly pedidosService: OrdersService,
     private readonly usuariosMapper: UsuariosMapper,
     private readonly bcryptService: BcryptService,
-  ) {}
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {
+  }
 
-  async findAll() {
-    this.logger.log('findAll')
-    return (await this.usuariosRepository.find()).map((u) =>
-      this.usuariosMapper.toResponseDto(u),
+  async findAll(query: PaginateQuery) {
+    this.logger.log('Obteniendo todos los usuarios')
+    // check cache
+    const cache = await this.cacheManager.get(
+      `all_users_page_${JSON.stringify(query)}`,
     )
+    if (cache) {
+      this.logger.log('Cache hit')
+      return cache
+    }
+    const res = await paginate(query, this.usuariosRepository, {
+      sortableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
+      defaultSortBy: [['username', 'ASC']],
+      searchableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
+      filterableColumns: {
+        username: [FilterOperator.CONTAINS],
+        email: [FilterOperator.CONTAINS],
+        createdAt: [FilterOperator.GT, FilterOperator.LT],
+        updatedAt: [FilterOperator.GT, FilterOperator.LT],
+      },
+    })
+    await this.cacheManager.set(
+      `all_users_page_${JSON.stringify(query)}`,
+      res,
+      60,
+    )
+    return res
   }
 
   async findOne(id: number) {
