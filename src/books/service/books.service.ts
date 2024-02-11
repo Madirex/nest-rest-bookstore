@@ -83,7 +83,6 @@ export class BooksService {
     const queryBuilder = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.category', 'category')
-      .leftJoinAndSelect('book.publisher', 'publisher')
 
     let pagination: Paginated<Book>
     try {
