@@ -260,8 +260,8 @@ export class ShopsService {
       .where('LOWER(shop.name) = LOWER(:name)', { name: name.toLowerCase() })
       .getOne()
 
-    if (!shopOp) {
-      throw new NotFoundException(`Shop con nombre: ${name} no encontrada`)
+    if (shopOp == null) {
+      return null
     }
 
     return this.shopMapper.mapEntityToResponseDto(shopOp)
