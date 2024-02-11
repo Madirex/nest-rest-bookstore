@@ -8,11 +8,11 @@ db.createUser({
     },
     {
       role: 'readWrite',
-        db: 'orders',
+        db: 'shop',
     }
   ],
 })
 
 db = db.getSiblingDB('BOOKSTORE_DB')
 
-db.createCollection('orders')
+db.createCollection('shop')
