@@ -12,8 +12,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
 import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
 import { FilterOperator, paginate, PaginateQuery } from 'nestjs-paginate'
-import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Cache } from 'cache-manager'
 
 /**
  * @description Servicio de usuarios
@@ -42,17 +40,13 @@ export class UsersService {
   ) {
   }
 
+  /**
+   * @description Devuelve todos los usuarios
+   * @param query Query para paginar
+   */
   async findAll(query: PaginateQuery) {
     this.logger.log('Obteniendo todos los usuarios')
-    // check cache
-    const cache = await this.cacheManager.get(
-      `all_users_page_${JSON.stringify(query)}`,
-    )
-    if (cache) {
-      this.logger.log('Cache hit')
-      return cache
-    }
-    const res = await paginate(query, this.usuariosRepository, {
+    const res = await paginate(query, this.usersRepository, {
       sortableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
       defaultSortBy: [['username', 'ASC']],
       searchableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
@@ -63,11 +57,6 @@ export class UsersService {
         updatedAt: [FilterOperator.GT, FilterOperator.LT],
       },
     })
-    await this.cacheManager.set(
-      `all_users_page_${JSON.stringify(query)}`,
-      res,
-      60,
-    )
     return res
   }
 
