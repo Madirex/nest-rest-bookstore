@@ -349,8 +349,8 @@ export class ShopsController {
     description: 'Tienda o cliente no encontrado',
   })
   async addClientToShop(
-    @Param('shopId') shopId: string,
-    @Param('clientId') clientId: string,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('clientId', ParseIntPipe) clientId: string,
   ) {
     this.logger.log(
       `Añadiendo cliente con ID ${clientId} a la tienda con ID ${shopId}`,
@@ -386,8 +386,8 @@ export class ShopsController {
     description: 'Tienda o cliente no encontrado',
   })
   async removeClientFromShop(
-    @Param('shopId') shopId: string,
-    @Param('clientId') clientId: string,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('clientId', ParseIntPipe) clientId: string,
   ) {
     this.logger.log(
       `Eliminando cliente con ID ${clientId} de la tienda con ID ${shopId}`,
