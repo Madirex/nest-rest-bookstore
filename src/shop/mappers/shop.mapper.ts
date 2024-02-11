@@ -66,9 +66,13 @@ export class ShopMapper {
    */
   mapEntityToResponseDto(entity: Shop): ResponseShopDto {
     const responseShopDto = plainToClass(ResponseShopDto, entity)
-    responseShopDto.booksId = entity.books.map((book) => book.id)
-    responseShopDto.clientsId = entity.clients.map((client) => client.id)
-    responseShopDto.address = entity.address // Inclusión de la dirección en el DTO
+    if (entity.books) {
+      responseShopDto.booksId = entity.books.map((book) => book.id)
+    }
+    if (entity.clients) {
+      responseShopDto.clientsId = entity.clients.map((client) => client.id)
+    }
+    responseShopDto.address = entity.address
     return responseShopDto
   }
 }
