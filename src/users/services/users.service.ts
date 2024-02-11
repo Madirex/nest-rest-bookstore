@@ -70,9 +70,18 @@ export class UsersService {
    */
   async findOne(id: string) {
     this.logger.log(`findOne: ${id}`)
-    return this.usersMapper.toResponseDto(
-      await this.usersRepository.findOneBy({ id }),
-    )
+
+    if (!id) {
+      throw new BadRequestException('El id del usuario no es válido')
+    }
+
+    const user = await this.usersRepository.findOneBy({ id })
+
+    if (!user) {
+      throw new NotFoundException(`User con id ${id} no encontrado`)
+    }
+
+    return this.usersMapper.toResponseDto(user)
   }
 
   /**

@@ -6,7 +6,8 @@ import {
   HttpCode,
   Logger,
   NotFoundException,
-  Param, ParseIntPipe, ParseUUIDPipe,
+  Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -325,7 +326,7 @@ export class ShopsController {
    * @param shopId id de la tienda
    * @param clientId id del cliente
    */
-  @Post(':shopId/clients/:clientId')
+  @Patch(':shopId/clients/:clientId')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @Roles('ADMIN')
@@ -399,7 +400,7 @@ export class ShopsController {
    * @param shopId id de la tienda
    * @param bookId id del libro
    */
-  @Post(':shopId/books/:bookId')
+  @Patch(':shopId/books/:bookId')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @Roles('ADMIN')
