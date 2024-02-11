@@ -6,6 +6,10 @@ db.createUser({
       role: 'readWrite',
       db: 'BOOKSTORE_DB',
     },
+    {
+      role: 'readWrite',
+        db: 'orders',
+    }
   ],
 })
 
