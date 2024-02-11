@@ -318,4 +318,19 @@ export class UsersService {
     this.logger.log(`findByEmail: ${email}`)
     return await this.usersRepository.findOneBy({ email })
   }
+
+  /**
+   * @description Elimina un usuario
+   * @param id Id del usuario
+   * @private Método privado
+   */
+  async remove(id: string) {
+    this.logger.log(`Eliminando user con id ${id}`)
+
+    //borrado lógico
+    const user = await this.usersRepository.findOneBy({ id })
+    user.isDeleted = true
+
+    return await this.usersRepository.save(user)
+  }
 }
