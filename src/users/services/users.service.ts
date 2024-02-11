@@ -17,6 +17,7 @@ import { OrdersService } from '../../orders/services/orders.service'
 import { v4 as uuidv4 } from 'uuid'
 import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
 import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
+import { FilterOperator, paginate, PaginateQuery } from 'nestjs-paginate'
 
 /**
  * @description Servicio de usuarios
@@ -45,12 +46,22 @@ export class UsersService {
 
   /**
    * @description Devuelve todos los usuarios
+   * @param query Query para paginar
    */
-  async findAll() {
-    this.logger.log('findAll')
-    return (await this.usersRepository.find()).map((u) =>
-      this.usersMapper.toResponseDto(u),
-    )
+  async findAll(query: PaginateQuery) {
+    this.logger.log('Obteniendo todos los usuarios')
+    const res = await paginate(query, this.usersRepository, {
+      sortableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
+      defaultSortBy: [['username', 'ASC']],
+      searchableColumns: ['username', 'email', 'createdAt', 'updatedAt'],
+      filterableColumns: {
+        username: [FilterOperator.CONTAINS],
+        email: [FilterOperator.CONTAINS],
+        createdAt: [FilterOperator.GT, FilterOperator.LT],
+        updatedAt: [FilterOperator.GT, FilterOperator.LT],
+      },
+    })
+    return res
   }
 
   /**
