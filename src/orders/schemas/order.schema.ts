@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { OrderlineSchema } from './orderline.schema'
 import * as mongoosePaginate from 'mongoose-paginate-v2'
-import { Document } from 'mongoose'
+import {Document, Types} from 'mongoose'
 
 export type OrderDocument = Order & Document
 
@@ -25,7 +25,7 @@ export type OrderDocument = Order & Document
 })
 export class Order {
   @Prop({
-    type: Number,
+    type: String,
     required: true,
   })
   userId: string
