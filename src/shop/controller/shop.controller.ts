@@ -6,7 +6,9 @@ import {
   HttpCode,
   Logger,
   NotFoundException,
-  Param, ParseIntPipe, ParseUUIDPipe,
+  Param,
+  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   Put,
@@ -350,7 +352,7 @@ export class ShopsController {
   })
   async addClientToShop(
     @Param('shopId', ParseUUIDPipe) shopId: string,
-    @Param('clientId', ParseIntPipe) clientId: string,
+    @Param('clientId', ParseUUIDPipe) clientId: string,
   ) {
     this.logger.log(
       `Añadiendo cliente con ID ${clientId} a la tienda con ID ${shopId}`,
@@ -387,7 +389,7 @@ export class ShopsController {
   })
   async removeClientFromShop(
     @Param('shopId', ParseUUIDPipe) shopId: string,
-    @Param('clientId', ParseIntPipe) clientId: string,
+    @Param('clientId', ParseUUIDPipe) clientId: string,
   ) {
     this.logger.log(
       `Eliminando cliente con ID ${clientId} de la tienda con ID ${shopId}`,
