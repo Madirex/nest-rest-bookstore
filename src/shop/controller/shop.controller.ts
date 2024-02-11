@@ -6,7 +6,7 @@ import {
   HttpCode,
   Logger,
   NotFoundException,
-  Param,
+  Param, ParseIntPipe, ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -311,8 +311,8 @@ export class ShopsController {
     description: 'Tienda o libro no encontrado',
   })
   async removeBookFromShop(
-    @Param('shopId') shopId: string,
-    @Param('bookId') bookId: number,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('bookId', ParseIntPipe) bookId: number,
   ) {
     this.logger.log(
       `Eliminando libro con ID ${bookId} de la tienda con ID ${shopId}`,
@@ -422,8 +422,8 @@ export class ShopsController {
     description: 'Tienda o libro no encontrado',
   })
   async addBookToShop(
-    @Param('shopId') shopId: string,
-    @Param('bookId') bookId: number,
+    @Param('shopId', ParseUUIDPipe) shopId: string,
+    @Param('bookId', ParseIntPipe) bookId: number,
   ) {
     this.logger.log(
       `Añadiendo libro con ID ${bookId} a la tienda con ID ${shopId}`,
