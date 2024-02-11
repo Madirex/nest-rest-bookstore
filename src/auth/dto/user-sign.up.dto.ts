@@ -28,7 +28,7 @@ export class UserSignUpDto {
   @ApiProperty({ example: 'Password123', description: 'Contraseña' })
   @IsString({ message: 'Password no es válido' })
   @IsNotEmpty({ message: 'Password no puede estar vacío' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, {
     message:
       'Password no es válido, debe contener al menos 8 caracteres, una mayúscula, una minúscula y un número',
   })

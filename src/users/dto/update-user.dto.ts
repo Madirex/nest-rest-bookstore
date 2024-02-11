@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types'
 import { CreateUserDto } from './create-user.dto'
-import { IsOptional } from 'class-validator'
+import {IsOptional, Matches} from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 /**
@@ -48,6 +48,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     description: 'La contraseña del usuario',
   })
   @IsOptional()
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, {
+    message:
+        'Password no es válido, debe contener al menos 8 caracteres, una mayúscula, una minúscula y un número',
+  })
   password: string
 
   @ApiProperty({
