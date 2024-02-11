@@ -368,4 +368,30 @@ export class UsersController {
     this.logger.log(`Eliminando order con id ${id}`)
     await this.usersService.removeOrder(id, request.user.id)
   }
+
+  /**
+   * @description Elimina un usuario
+   */
+  @Delete(':id')
+  @HttpCode(204)
+  @Roles('ADMIN')
+  @ApiResponse({
+    status: 204,
+    description: 'Usuario eliminado',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador del usuario',
+    type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Usuario no encontrado',
+  })
+  @ApiBadRequestResponse({
+    description: 'El id del usuario no es válido',
+  })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    this.logger.log(`Eliminando usuario con id ${id}`)
+    await this.usersService.remove(id)
+  }
 }
