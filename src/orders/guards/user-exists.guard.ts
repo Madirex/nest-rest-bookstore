@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { OrdersService } from '../services/orders.service'
+import { validate as isValidUUID } from 'uuid';
+
 
 /**
  * Guard que verifica si el ID del usuario existe en el sistema
@@ -33,8 +35,16 @@ export class UserExistsGuard implements CanActivate {
       throw new BadRequestException('El id del usuario es obligatorio')
     }
 
-    if (!isNaN(userId)) {
-      throw new BadRequestException('El id del usuario no es válido')
+    if(!isValidUUID(userId)) {
+        throw new BadRequestException('El id del usuario debe ser un UUID')
+    }
+
+    if(typeof userId !== 'string') {
+        throw new BadRequestException('El id del usuario debe ser un string')
+    }
+
+    if(userId.length < 16) {
+        throw new BadRequestException('El id del usuario debe tener una longitud de al menos 16 caracteres')
     }
 
     return this.ordersService.userExists(userId).then((exists) => {
