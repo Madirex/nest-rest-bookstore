@@ -11,19 +11,6 @@ import { ResponseBookDto } from '../dto/response-book.dto'
 import { Paginated } from 'nestjs-paginate'
 
 const id = uuidv4()
-
-const bytesPNG: number[] = [
-  137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1, 0,
-  0, 0, 1, 8, 6, 0, 0, 0, 31, 21, -60, -60, 137, 80, 78, 71, 13, 10, 26, 10, 0,
-  0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, -60,
-  -60,
-]
-
-const bytesJPEG: number[] = [
-  255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 96, 0, 0, 255, 219, 0,
-  67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, 9,
-]
-
 describe('BooksController', () => {
   let controller: BooksController
   let service: BooksService
@@ -181,7 +168,11 @@ describe('BooksController', () => {
     const date = new Date()
     it('debería de actualizar el Book', async () => {
       const id = uuidv4()
-      const dto: UpdateBookDto = { name: 'UpdatedBook' }
+      const dto: UpdateBookDto = {
+        author: '',
+        publisherId: 0,
+        name: 'UpdatedBook',
+      }
       const mockResult: ResponseBookDto = {
         id: id,
         name: 'UpdatedBook',
@@ -219,7 +210,11 @@ describe('BooksController', () => {
 
     it('debería hacer throw NotFoundException porque el Book no existe', async () => {
       const id = uuidv4()
-      const dto: UpdateBookDto = { name: 'UpdatedBook' }
+      const dto: UpdateBookDto = {
+        author: '',
+        publisherId: 0,
+        name: 'UpdatedBook',
+      }
       jest.spyOn(service, 'update').mockRejectedValue(new NotFoundException())
       await expect(controller.update(id, dto)).rejects.toThrow(
         NotFoundException,

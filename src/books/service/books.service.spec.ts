@@ -253,18 +253,24 @@ describe('BooksService', () => {
     it('debería crear un nuevo Book', async () => {
       jest.spyOn(service, 'getByName').mockResolvedValue(null)
       jest.spyOn(service, 'getCategoryByName').mockResolvedValue(null)
+      jest
+        .spyOn(service, 'getPublisherByName')
+        .mockResolvedValue(new Publisher())
       jest.spyOn(bookMapperMock, 'toEntity').mockReturnValue(mockBook)
       jest
         .spyOn(bookMapperMock, 'mapEntityToResponseDto')
         .mockReturnValue(responseBookDto)
       jest.spyOn(bookRepository, 'save').mockResolvedValue(mockBook)
       jest.spyOn(cacheManager.store, 'keys').mockResolvedValue([])
-
       const res = await service.create(createBookDto)
       expect(res).toEqual(responseBookDto)
       expect(service.getByName).toHaveBeenCalled()
       expect(service.getCategoryByName).toHaveBeenCalled()
-      expect(bookMapperMock.toEntity).toHaveBeenCalledWith(createBookDto, null)
+      expect(bookMapperMock.toEntity).toHaveBeenCalledWith(
+        createBookDto,
+        null,
+        new Publisher(),
+      )
       expect(bookRepository.save).toHaveBeenCalledWith({ ...mockBook })
     })
 
