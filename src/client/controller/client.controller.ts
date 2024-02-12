@@ -98,6 +98,8 @@ export class ClientController {
     type: String,
   })
   findAll(@Paginate() query: PaginateQuery) {
+    console.log(`Obteniendo todos los clientes`)
+    console.log(`Query: ${JSON.stringify(query)} `)
     return this.clientService.findAll(query)
   }
 
@@ -126,6 +128,8 @@ export class ClientController {
     description: 'El id del cliente no es válido',
   })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
+    console.log(`Buscando cliente por id`)
+    console.log(`Buscando cliente por id: ${id}`)
     return this.clientService.findOne(id)
   }
 
@@ -154,6 +158,8 @@ export class ClientController {
     description: 'El email del cliente no es válido',
   })
   findOneByEmail(@Param('email') email: string) {
+    console.log(`Buscando cliente por email`)
+    console.log(`Buscando cliente por email: ${email}`)
     return this.clientService.findByEmail(email)
   }
 
@@ -174,6 +180,8 @@ export class ClientController {
     description: 'Datos no válidos',
   })
   create(@Body() createClientDto: CreateClientDto) {
+    console.log(`Creación de cliente`)
+    console.log(`Creando cliente: ${JSON.stringify(createClientDto)}`)
     return this.clientService.create(createClientDto)
   }
 
@@ -241,21 +249,17 @@ export class ClientController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
   ) {
+    console.log(`Actualización de imagen`)
+    console.log(`Actualizando imagen de cliente con id: ${id}`)
     const allowedMimes = ['image/jpeg', 'image/png']
-    const maxFileSizeInBytes = 1024 * 1024 // 1 megabyte
+    const maxSize = 1024 * 1024 // 1 megabyte
     if (file === undefined) throw new BadRequestException('Fichero no enviado')
     else if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException(
-        'Fichero no soportado. No es del tipo imagen válido',
-      )
+      throw new BadRequestException('Fichero no soportado.')
     } else if (file.mimetype != Util.detectFileType(file)) {
-      throw new BadRequestException(
-        'Fichero no soportado. No es del tipo imagen válido',
-      )
-    } else if (file.size > maxFileSizeInBytes) {
-      throw new BadRequestException(
-        `El tamaño del archivo no puede ser mayor a ${maxFileSizeInBytes} bytes.`,
-      )
+      throw new BadRequestException('Fichero no soportado.')
+    } else if (file.size > maxSize) {
+      throw new BadRequestException(`El tamaño supera los ${maxSize} bytes.`)
     }
 
     return await this.clientService.updateImage(id, file, req, false)
@@ -290,6 +294,8 @@ export class ClientController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateClientDto: UpdateClientDto,
   ) {
+    console.log(`Actualización de cliente`)
+    console.log(`Actualizando cliente con id: ${id}`)
     return this.clientService.update(id, updateClientDto)
   }
 
@@ -317,6 +323,8 @@ export class ClientController {
     description: 'El id del cliente no es válido',
   })
   remove(@Param('id', ParseUUIDPipe) id: string) {
+    console.log(`Eliminación de cliente`)
+    console.log(`Eliminando cliente con id: ${id}`)
     return this.clientService.remove(id)
   }
 }
