@@ -8,10 +8,11 @@ import { Order, OrderDocument } from '../schemas/order.schema'
 import { OrdersMapper } from '../mappers/orders.mapper'
 import { User } from '../../users/entities/user.entity'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { Category } from '../../categories/entities/category.entity'
+import { CategoryType } from '../../categories/entities/category.entity'
 import { Book } from '../../books/entities/book.entity'
 import { CreateOrderDto } from '../dto/CreateOrderDto'
 import { UpdateOrderDto } from '../dto/UpdateOrderDto'
+import { Client } from '../../client/entities/client.entity'
 
 describe('OrdersService', () => {
   let ordersService: OrdersService
@@ -19,6 +20,39 @@ describe('OrdersService', () => {
   let ordersRepository: PaginateModel<OrderDocument>
   let booksRepository: Repository<Book>
   let usersRepository: Repository<User>
+  let clientRepository: Repository<Client>
+
+  const book = {
+    id: 1,
+    name: 'Book existente',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    isActive: true,
+    price: 10.99,
+    stock: 10,
+    image: 'book-image.jpg',
+    description: 'Book description',
+    category: {
+      id: 1,
+      categoryType: CategoryType.SERIES,
+      name: 'Series',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
+      books: [],
+    },
+    author: '',
+    publisher: {
+      id: 1,
+      name: 'Publisher',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      books: null,
+      image: 'publisher-image.jpg',
+      active: true,
+    },
+    shop: null,
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,6 +84,14 @@ describe('OrdersService', () => {
           },
         },
         {
+          provide: getRepositoryToken(Client),
+          useValue: {
+            findOne: jest.fn(),
+            findOneBy: jest.fn(),
+            save: jest.fn(),
+          },
+        },
+        {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
@@ -65,6 +107,9 @@ describe('OrdersService', () => {
       getModelToken(Order.name),
     )
     booksRepository = module.get<Repository<Book>>(getRepositoryToken(Book))
+    clientRepository = module.get<Repository<Client>>(
+      getRepositoryToken(Client),
+    )
     usersRepository = module.get<Repository<User>>(getRepositoryToken(User))
   })
 
@@ -131,7 +176,7 @@ describe('OrdersService', () => {
       } as any)
 
       await expect(ordersService.findOne(orderId)).rejects.toThrow(
-        new NotFoundException(`Pedido con id ${orderId} no encontrado`),
+        new NotFoundException(`No se encontró el order con id: ${orderId}`),
       )
 
       expect(ordersRepository.findById).toHaveBeenCalledWith(orderId)
@@ -159,19 +204,7 @@ describe('OrdersService', () => {
     it('should create a new order', async () => {
       const createOrderDto: CreateOrderDto = {
         userId: 'user-id',
-        client: {
-          fullName: 'John Doe',
-          email: 'john@example.com',
-          phone: '123456789',
-          address: {
-            street: '123 Main St',
-            number: '456',
-            city: 'Cityville',
-            province: 'Provinceland',
-            country: 'Countryland',
-            postalCode: '12345',
-          },
-        },
+        clientId: 'client-id',
         orderLines: [
           {
             productId: 1,
@@ -182,29 +215,9 @@ describe('OrdersService', () => {
         ],
       }
 
-      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce({
-        id: 1,
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 10,
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce(book)
 
-      jest.spyOn(booksRepository, 'save').mockResolvedValueOnce({
-        id: 'book-id',
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 8, // Stock reducido después de la reserva
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'save').mockResolvedValueOnce(book)
 
       jest.spyOn(ordersRepository, 'create').mockReturnValueOnce({
         id: 'order-id',
@@ -225,17 +238,7 @@ describe('OrdersService', () => {
         isDeleted: false,
       } as any)
 
-      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce({
-        id: 1,
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 10,
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce(book)
 
       const result = await ordersService.create(createOrderDto)
 
@@ -248,7 +251,7 @@ describe('OrdersService', () => {
       expect(result).toEqual({
         id: 'order-id',
         userId: 'user-id',
-        client: createOrderDto.client,
+        clientId: createOrderDto.clientId,
         orderLines: [
           {
             productId: 'book-id',
@@ -271,24 +274,13 @@ describe('OrdersService', () => {
       const orderId = 'order-id'
       const updateOrderDto: UpdateOrderDto = {
         userId: 'user-id',
-        client: {
-          fullName: 'Updated Name',
-          email: 'updated@example.com',
-          phone: '987654321',
-          address: {
-            street: '456 Updated St',
-            number: '789',
-            city: 'Updated City',
-            province: 'Updated Province',
-            country: 'Updated Country',
-            postalCode: '54321',
-          },
-        },
+        clientId: 'client-id',
         orderLines: [
           {
-            productId: 'updated-book-id',
-            productPrice: 29.99,
-            stock: 2,
+            productId: 1,
+            price: 10.2,
+            quantity: 2,
+            total: 20.4,
           },
         ],
       }
@@ -361,29 +353,9 @@ describe('OrdersService', () => {
         }),
       } as any)
 
-      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce({
-        id: 'book-id',
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 10,
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce(book)
 
-      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce({
-        id: 'book-id',
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 10,
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce(book)
 
       // Act & Assert
       await expect(
@@ -395,24 +367,13 @@ describe('OrdersService', () => {
       const orderId = 'order-id'
       const updateOrderDto: UpdateOrderDto = {
         userId: 'user-id',
-        client: {
-          fullName: 'Updated Name',
-          email: 'updated@example.com',
-          phone: '987654321',
-          address: {
-            street: '456 Updated St',
-            number: '789',
-            city: 'Updated City',
-            province: 'Updated Province',
-            country: 'Updated Country',
-            postalCode: '54321',
-          },
-        },
+        clientId: 'client-id',
         orderLines: [
           {
-            productId: 'updated-book-id',
-            productPrice: 19.99,
-            stock: 2,
+            productId: 1,
+            price: 10.2,
+            quantity: 2,
+            total: 20.4,
           },
         ],
       }
@@ -485,17 +446,7 @@ describe('OrdersService', () => {
         }),
       } as any)
 
-      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValue({
-        id: 'book-id',
-        name: 'La mansión de las pesadillas',
-        price: 19.99,
-        stock: 10,
-        image: 'https://example.com/picture.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        category: new Category(),
-      })
+      jest.spyOn(booksRepository, 'findOneBy').mockResolvedValue(book)
 
       const result = await ordersService.update(orderId, updateOrderDto)
 
@@ -548,7 +499,7 @@ describe('OrdersService', () => {
       } as any)
 
       await expect(ordersService.remove(orderId)).rejects.toThrow(
-        new NotFoundException(`Pedido con id ${orderId} no encontrado`),
+        new NotFoundException(`Order con id ${orderId} no encontrado`),
       )
 
       expect(ordersRepository.findById).toHaveBeenCalledWith(orderId)
@@ -582,7 +533,7 @@ describe('OrdersService', () => {
     })
   })
 
-  describe('getOrdersByUser', () => {
+  describe('findByUserId', () => {
     it('should return orders for the given user ID', async () => {
       const userId = 'some-user-id'
       const mockOrders = [{}, {}]
@@ -591,7 +542,7 @@ describe('OrdersService', () => {
         exec: jest.fn().mockResolvedValueOnce(mockOrders as any),
       } as any)
 
-      const result = await ordersService.getOrdersByUser(userId)
+      const result = await ordersService.findByUserId(userId)
 
       expect(result).toEqual(mockOrders)
       expect(findSpy).toHaveBeenCalledWith({ userId: userId })
