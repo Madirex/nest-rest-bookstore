@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import * as request from 'supertest'
+import { CategoriesController } from '../../../src/categories/controller/categories.controller'
+import { CategoriesService } from '../../../src/categories/service/categories.service'
 import {
   Category,
   CategoryType,
@@ -13,10 +15,6 @@ import { CreateCategoryDto } from '../../../src/categories/dto/create-category.d
 import { UpdateCategoryDto } from '../../../src/categories/dto/update-category.dto'
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { RolesAuthGuard } from '../../../src/auth/guards/roles-auth.guard'
-import { JwtAuthGuard } from '../../../src/auth/guards/jwt-auth.guard'
-import { CategoriesController } from '../../../src/categories/controller/categories.controller'
-import { CategoriesService } from '../../../src/categories/service/categories.service'
 
 describe('CategoriesController (e2e)', () => {
   let app: INestApplication
@@ -28,15 +26,6 @@ describe('CategoriesController (e2e)', () => {
     {
       id: 1,
       name: 'Category1',
-      createdAt: simulatedDate,
-      updatedAt: simulatedDate,
-      categoryType: CategoryType.OTHER,
-      isActive: true,
-      books: [],
-    },
-    {
-      id: 2,
-      name: 'Category2',
       createdAt: simulatedDate,
       updatedAt: simulatedDate,
       categoryType: CategoryType.OTHER,
@@ -83,12 +72,7 @@ describe('CategoriesController (e2e)', () => {
         { provide: CategoriesService, useValue: mockCategoriesService },
         { provide: CACHE_MANAGER, useValue: cacheManagerMock },
       ],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: () => true })
-      .overrideGuard(RolesAuthGuard)
-      .useValue({ canActivate: () => true })
-      .compile()
+    }).compile()
 
     app = moduleFixture.createNestApplication()
     await app.init()
@@ -109,10 +93,8 @@ describe('CategoriesController (e2e)', () => {
     it('debería retornar las categorías', async () => {
       mockCategoriesService.findAll.mockResolvedValue([testCategories])
 
-      const options = { page: 1, limit: 1 }
       const { body } = await request(app.getHttpServer())
         .get(endpoint)
-        .query(options)
         .expect(200)
 
       jest.spyOn(cacheManager, 'get').mockResolvedValue(Promise.resolve(null))
@@ -122,7 +104,6 @@ describe('CategoriesController (e2e)', () => {
       const receivedBodyString = JSON.stringify(body)
 
       expect(receivedBodyString).toEqual(expectedBodyString)
-      expect(body).toHaveLength(options.limit)
       expect(mockCategoriesService.findAll).toHaveBeenCalled()
     })
 

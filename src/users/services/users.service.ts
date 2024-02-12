@@ -45,7 +45,8 @@ export class UsersService {
     private readonly ordersService: OrdersService,
     private readonly usersMapper: UsersMapper,
     private readonly bcryptService: BcryptService,
-  ) {}
+  ) {
+  }
 
   /**
    * @description Devuelve todos los usuarios
