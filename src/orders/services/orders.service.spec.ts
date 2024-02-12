@@ -21,6 +21,21 @@ describe('OrdersService', () => {
   let booksRepository: Repository<Book>
   let usersRepository: Repository<User>
   let clientRepository: Repository<Client>
+  let userRepository: Repository<User>
+
+  const user: User = {
+    id: 'user-id',
+    email: 'email',
+    name: 'name',
+    surname: 'surname',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    username: 'username',
+    password: 'password',
+    roles: [],
+    roleNames: [],
+    isDeleted: false,
+  }
 
   const book = {
     id: 1,
@@ -28,7 +43,7 @@ describe('OrdersService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     isActive: true,
-    price: 10.99,
+    price: 10.1,
     stock: 10,
     image: 'book-image.jpg',
     description: 'Book description',
@@ -52,6 +67,26 @@ describe('OrdersService', () => {
       active: true,
     },
     shop: null,
+  }
+
+  const client: Client = {
+    shop: null,
+    id: 'client-id',
+    email: 'email',
+    phone: 'phone',
+    name: 'name',
+    surname: 'surname',
+    address: {
+      street: 'street',
+      number: 'number',
+      city: 'city',
+      province: 'province',
+      country: 'country',
+      postalCode: 'postalCode',
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    image: 'image',
   }
 
   beforeEach(async () => {
@@ -110,6 +145,7 @@ describe('OrdersService', () => {
     clientRepository = module.get<Repository<Client>>(
       getRepositoryToken(Client),
     )
+    userRepository = module.get<Repository<User>>(getRepositoryToken(User))
     usersRepository = module.get<Repository<User>>(getRepositoryToken(User))
   })
 
@@ -208,9 +244,9 @@ describe('OrdersService', () => {
         orderLines: [
           {
             productId: 1,
-            price: 19.99,
+            price: 10.1,
             quantity: 2,
-            total: 39.98,
+            total: 20.2,
           },
         ],
       }
@@ -239,6 +275,8 @@ describe('OrdersService', () => {
       } as any)
 
       jest.spyOn(booksRepository, 'findOneBy').mockResolvedValueOnce(book)
+      jest.spyOn(clientRepository, 'findOneBy').mockResolvedValueOnce(client)
+      jest.spyOn(userRepository, 'findOneBy').mockResolvedValueOnce(user)
 
       const result = await ordersService.create(createOrderDto)
 
@@ -278,9 +316,9 @@ describe('OrdersService', () => {
         orderLines: [
           {
             productId: 1,
-            price: 10.2,
+            price: 10.1,
             quantity: 2,
-            total: 20.4,
+            total: 20.2,
           },
         ],
       }
@@ -371,9 +409,9 @@ describe('OrdersService', () => {
         orderLines: [
           {
             productId: 1,
-            price: 10.2,
+            price: 10.1,
             quantity: 2,
-            total: 20.4,
+            total: 20.1,
           },
         ],
       }
@@ -447,6 +485,8 @@ describe('OrdersService', () => {
       } as any)
 
       jest.spyOn(booksRepository, 'findOneBy').mockResolvedValue(book)
+      jest.spyOn(clientRepository, 'findOneBy').mockResolvedValueOnce(client)
+      jest.spyOn(userRepository, 'findOneBy').mockResolvedValueOnce(user)
 
       const result = await ordersService.update(orderId, updateOrderDto)
 
