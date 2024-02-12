@@ -135,7 +135,6 @@ export class BooksService {
     // Caché
     const cache: ResponseBookDto = await this.cacheManager.get(`book_${id}`)
     if (cache) {
-      console.log('Cache hit')
       this.logger.log('Cache hit')
       return cache
     }

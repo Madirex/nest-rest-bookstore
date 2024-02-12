@@ -100,11 +100,10 @@ export class ClientService {
     const res = {
       ...pagination,
       data: (pagination.data ?? []).map((client) =>
-          this.clientMapper.toDTO(client),
+        this.clientMapper.toDTO(client),
       ),
     }
 
-    console.log('res', res)
     await this.cacheManager.set(
       `clients_${hash(JSON.stringify(query))}`,
       res,

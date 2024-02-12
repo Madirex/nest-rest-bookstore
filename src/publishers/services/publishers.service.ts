@@ -336,7 +336,6 @@ export class PublisherService {
     if (!book) {
       throw new NotFoundException(`No se encontró el libro con id: ${bookId}`)
     }
-    console.log(book, publisher)
     publisher.books.add(book)
     await this.publisherRepository.save(publisher)
     const dto = this.publisherMapper.toDTO(publisher)
@@ -366,7 +365,6 @@ export class PublisherService {
     publisher.books.delete(book)
     const publisher_updated = await this.publisherRepository.save(publisher)
     const dto = this.publisherMapper.toDTO(publisher_updated)
-    console.log(publisher_updated)
     this.onChange(NotificationType.UPDATE, dto)
     await this.invalidateCacheKey('publisher')
     return dto

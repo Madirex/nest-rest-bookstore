@@ -99,7 +99,6 @@ export class CategoriesService {
       `category_${id}`,
     )
     if (cache) {
-      console.log('Cache hit')
       this.logger.log('Cache hit')
       return cache
     }
