@@ -104,6 +104,11 @@ export class BooksController {
   })
   async findAll(@Paginate() query: PaginateQuery) {
     this.logger.log('Obteniendo todos los Books')
+    console.log('Obteniendo todos los Books')
+    this.logger.log(
+      `Obteniendo todos los Books por query: ${JSON.stringify(query)}`,
+    )
+
     return await this.booksService.findAll(query)
   }
 
@@ -132,6 +137,8 @@ export class BooksController {
     description: 'El id del libro no es válido',
   })
   async findOne(@Param('id') id: number) {
+    this.logger.log('Obteniendo Book por id')
+    console.log(`Obteniendo Book por id: ${id}`)
     this.logger.log(`Obteniendo Book por id: ${id}`)
     return await this.booksService.findOne(id)
   }
@@ -164,6 +171,9 @@ export class BooksController {
     description: 'La categoría no existe o no es válida',
   })
   async create(@Body() createBookDto: CreateBookDto) {
+    this.logger.log(`Creación de Book`)
+    console.log(`Creando Book con datos: 
+    ${JSON.stringify(createBookDto)}`)
     this.logger.log(`Creando Book con datos: ${JSON.stringify(createBookDto)}`)
     return await this.booksService.create(createBookDto)
   }
@@ -205,9 +215,15 @@ export class BooksController {
     description: 'La categoría no existe o no es válida',
   })
   async update(@Param('id') id: number, @Body() updateBookDto: UpdateBookDto) {
+    this.logger.log(`Actualización de Book`)
+
+    console.log(`Actualizando Book ${id} con datos: 
+      ${updateBookDto}`)
+
     this.logger.log(
       `Actualizando Book ${id} con datos: ${JSON.stringify(updateBookDto)}`,
     )
+
     return await this.booksService.update(id, updateBookDto)
   }
 
@@ -238,7 +254,10 @@ export class BooksController {
     description: 'El id del libro no es válido',
   })
   async remove(@Param('id') id: number) {
+    this.logger.log(`Eliminación de Book`)
+    console.log(`Eliminando Book con id: ${id}`)
     this.logger.log(`Eliminando Book con id: ${id}`)
+
     return await this.booksService.remove(id)
   }
 
@@ -304,23 +323,20 @@ export class BooksController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
   ) {
+    this.logger.log(`Actualización de imagen`)
+    console.log(`Actualizando imagen al Book con id ${id}:  ${file}`)
     this.logger.log(`Actualizando imagen al Book con id ${id}:  ${file}`)
 
     const allowedMimes = ['image/jpeg', 'image/png']
-    const maxFileSizeInBytes = 1024 * 1024 // 1 megabyte
+    const maxSize = 1024 * 1024 // 1 megabyte
+
     if (file === undefined) throw new BadRequestException('Fichero no enviado')
     else if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException(
-        'Fichero no soportado. No es del tipo imagen válido',
-      )
+      throw new BadRequestException('Fichero no soportado.')
     } else if (file.mimetype != Util.detectFileType(file)) {
-      throw new BadRequestException(
-        'Fichero no soportado. No es del tipo imagen válido',
-      )
-    } else if (file.size > maxFileSizeInBytes) {
-      throw new BadRequestException(
-        `El tamaño del archivo no puede ser mayor a ${maxFileSizeInBytes} bytes.`,
-      )
+      throw new BadRequestException('Fichero no soportado.')
+    } else if (file.size > maxSize) {
+      throw new BadRequestException(`El tamaño supera los ${maxSize} bytes.`)
     }
     return await this.booksService.updateImage(id, file, req, false)
   }
