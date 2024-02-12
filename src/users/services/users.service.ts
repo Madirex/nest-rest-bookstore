@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ILike, Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
@@ -18,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { CreateOrderDto } from '../../orders/dto/CreateOrderDto'
 import { UpdateOrderDto } from '../../orders/dto/UpdateOrderDto'
 import { FilterOperator, paginate, PaginateQuery } from 'nestjs-paginate'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 /**
  * @description Servicio de usuarios
@@ -33,6 +28,7 @@ export class UsersService {
    * @param ordersService Servicio de orders
    * @param usersMapper Mapeador de usuarios
    * @param bcryptService Servicio de encriptación
+   * @param cacheManager
    */
   constructor(
     @InjectRepository(User)
@@ -42,7 +38,8 @@ export class UsersService {
     private readonly ordersService: OrdersService,
     private readonly usersMapper: UsersMapper,
     private readonly bcryptService: BcryptService,
-  ) {}
+  ) {
+  }
 
   /**
    * @description Devuelve todos los usuarios

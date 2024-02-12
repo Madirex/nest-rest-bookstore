@@ -1,30 +1,16 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { CreateCategoryDto } from '../dto/create-category.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Category } from '../entities/category.entity'
 import { Repository } from 'typeorm'
 import { CategoriesMapper } from '../mappers/categories.mapper'
-import {
-  NotificationType,
-  WsNotification,
-} from '../../websockets/notifications/notification.model'
+import { NotificationType, WsNotification } from '../../websockets/notifications/notification.model'
 import { ResponseCategoryDto } from '../dto/response-category.dto'
 import { CategoriesNotificationsGateway } from '../../websockets/notifications/categories-notifications.gateway'
 import { Cache } from 'cache-manager'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import {
-  FilterOperator,
-  FilterSuffix,
-  paginate,
-  PaginateQuery,
-} from 'nestjs-paginate'
+import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate'
 import { hash } from 'typeorm/util/StringUtils'
 
 /**
