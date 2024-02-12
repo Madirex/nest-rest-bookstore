@@ -11,6 +11,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Category } from '../../categories/entities/category.entity'
 import { Book } from '../../books/entities/book.entity'
 import { CreateOrderDto } from '../dto/CreateOrderDto'
+import { UpdateOrderDto } from '../dto/UpdateOrderDto'
 
 describe('OrdersService', () => {
   let ordersService: OrdersService
