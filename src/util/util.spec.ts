@@ -65,7 +65,7 @@ describe('Util', () => {
       const apiHost = process.env.API_HOST
         ? `${process.env.API_HOST}`
         : 'localhost'
-      const isHttps = process.env.API_HTTPS ? process.env.API_HTTPS : false
+      const isHttps = process.env.API_HTTPS ? process.env.API_HTTPS : true
       const protocol = isHttps ? 'https' : 'http'
       const expectedPath = `${protocol}://${apiHost}:${apiPort}${apiVersion}/storage/imagen.jpg`
       expect(responseBookDto.image).toBe(expectedPath)
