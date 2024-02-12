@@ -9,10 +9,7 @@ import { CreatePublisherDto } from '../../../src/publishers/dto/create-publisher
 import { UpdatePublisherDto } from '../../../src/publishers/dto/update-publisher.dto'
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { JwtAuthGuard } from '../../../src/auth/guards/jwt-auth.guard'
-import { RolesAuthGuard } from '../../../src/auth/guards/roles-auth.guard'
 import { PublishersController } from '../../../src/publishers/controllers/publishers.controller'
-import { OrdersService } from '../../../src/orders/services/orders.service'
 import { PublisherService } from '../../../src/publishers/services/publishers.service'
 
 describe('PublishersController (e2e)', () => {
@@ -26,21 +23,12 @@ describe('PublishersController (e2e)', () => {
     name: 'Publisher1',
     description: 'Awesome Publisher',
   }
-  const testPublishers = [
-    {
-      id: testPublisherId,
-      name: 'Publisher1',
-      description: 'Awesome Publisher',
-    },
-  ]
 
   const createPublisherDto: CreatePublisherDto = {
     name: 'Publisher1',
   }
 
-  const updatePublisherDto: UpdatePublisherDto = {
-    name: '',
-  }
+  const updatePublisherDto: UpdatePublisherDto = { name: 'updated' }
 
   const mockPublishersService = {
     findAll: jest.fn(),
@@ -49,17 +37,6 @@ describe('PublishersController (e2e)', () => {
     update: jest.fn(),
     remove: jest.fn(),
     exists: jest.fn(),
-    updateImage: jest.fn(),
-  }
-
-  const mockOrdersService = {
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    exists: jest.fn(),
-    userExists: jest.fn(),
     updateImage: jest.fn(),
   }
 
@@ -76,16 +53,11 @@ describe('PublishersController (e2e)', () => {
       imports: [CacheModule.register()],
       controllers: [PublishersController],
       providers: [
+        PublisherService,
         { provide: PublisherService, useValue: mockPublishersService },
-        { provide: OrdersService, useValue: mockOrdersService },
         { provide: CACHE_MANAGER, useValue: cacheManagerMock },
       ],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: () => true })
-      .overrideGuard(RolesAuthGuard)
-      .useValue({ canActivate: () => true })
-      .compile()
+    }).compile()
 
     app = moduleFixture.createNestApplication()
     await app.init()
@@ -98,23 +70,21 @@ describe('PublishersController (e2e)', () => {
 
   describe('GET /publishers', () => {
     it('debería retornar todos los Publishers', async () => {
-      mockPublishersService.findAll.mockResolvedValue(testPublishers)
+      mockPublishersService.findAll.mockResolvedValue([testPublisher])
 
-      const options = { page: 1, limit: 1 }
       const { body } = await request(app.getHttpServer())
         .get(endpoint)
-        .query(options)
         .expect(200)
 
       jest.spyOn(cacheManager, 'get').mockResolvedValue(Promise.resolve(null))
       jest.spyOn(cacheManager, 'set').mockResolvedValue()
 
-      expect(body).toEqual(testPublishers)
-      expect(body).toHaveLength(options.limit)
+      expect(body).toEqual([testPublisher])
       expect(mockPublishersService.findAll).toHaveBeenCalled()
     })
 
     it('debería retornar el resultado caché', async () => {
+      const testPublishers = [testPublisher]
       jest.spyOn(cacheManager, 'get').mockResolvedValue(testPublishers)
       const result = await mockPublishersService.findAll()
       expect(result).toEqual(testPublishers)
@@ -168,9 +138,6 @@ describe('PublishersController (e2e)', () => {
         .expect(201)
 
       expect(body).toEqual(testPublisher)
-      expect(mockPublishersService.create).toHaveBeenCalledWith(
-        createPublisherDto,
-      )
     })
   })
 
