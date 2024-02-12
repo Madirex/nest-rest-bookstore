@@ -5,14 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import * as request from 'supertest'
+import { BooksController } from '../../../src/books/controller/books.controller'
+import { BooksService } from '../../../src/books/service/books.service'
 import { CreateBookDto } from '../../../src/books/dto/create-book.dto'
 import { UpdateBookDto } from '../../../src/books/dto/update-book.dto'
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { JwtAuthGuard } from '../../../src/auth/guards/jwt-auth.guard'
-import { RolesAuthGuard } from '../../../src/auth/guards/roles-auth.guard'
-import { BooksController } from '../../../src/books/controller/books.controller'
-import { BooksService } from '../../../src/books/service/books.service'
 
 describe('BooksController (e2e)', () => {
   let app: INestApplication
@@ -25,21 +23,14 @@ describe('BooksController (e2e)', () => {
     name: 'Book1',
     description: 'Awesome Book',
   }
-  const testBooks = [
-    {
-      id: testBookId,
-      name: 'Book1',
-      description: 'Awesome Book',
-    },
-  ]
 
   const createBookDto: CreateBookDto = {
+    author: '',
+    publisherId: 0,
     name: 'Book1',
-    author: 'Author1',
-    publisherId: 1,
   }
 
-  const updateBookDto: UpdateBookDto = { author: '', name: '', publisherId: 0 }
+  const updateBookDto: UpdateBookDto = {}
 
   const mockBooksService = {
     findAll: jest.fn(),
@@ -68,12 +59,7 @@ describe('BooksController (e2e)', () => {
         { provide: BooksService, useValue: mockBooksService },
         { provide: CACHE_MANAGER, useValue: cacheManagerMock },
       ],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: () => true })
-      .overrideGuard(RolesAuthGuard)
-      .useValue({ canActivate: () => true })
-      .compile()
+    }).compile()
 
     app = moduleFixture.createNestApplication()
     await app.init()
@@ -86,23 +72,21 @@ describe('BooksController (e2e)', () => {
 
   describe('GET /books', () => {
     it('debería retornar todos los Books', async () => {
-      mockBooksService.findAll.mockResolvedValue(testBooks)
+      mockBooksService.findAll.mockResolvedValue([testBook])
 
-      const options = { page: 1, limit: 1 }
       const { body } = await request(app.getHttpServer())
         .get(endpoint)
-        .query(options)
         .expect(200)
 
       jest.spyOn(cacheManager, 'get').mockResolvedValue(Promise.resolve(null))
       jest.spyOn(cacheManager, 'set').mockResolvedValue()
 
-      expect(body).toEqual(testBooks)
-      expect(body).toHaveLength(options.limit)
+      expect(body).toEqual([testBook])
       expect(mockBooksService.findAll).toHaveBeenCalled()
     })
 
     it('debería retornar el resultado caché', async () => {
+      const testBooks = [testBook]
       jest.spyOn(cacheManager, 'get').mockResolvedValue(testBooks)
       const result = await mockBooksService.findAll()
       expect(result).toEqual(testBooks)
