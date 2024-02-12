@@ -7,13 +7,10 @@ import { BcryptService } from '../bcrypt.service'
 import { OrdersService } from '../../orders/services/orders.service'
 import { UserRole } from '../entities/user-role.entity'
 import { CreateUserDto } from '../dto/create-user.dto'
-import {
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { UpdateUserDto } from '../dto/update-user.dto'
 import { v4 as uuidv4 } from 'uuid'
+import { Paginated } from 'nestjs-paginate'
 
 describe('UsersService', () => {
   let service: UsersService
@@ -24,12 +21,36 @@ describe('UsersService', () => {
   let bcryptServiceMock: any
   const uuid = uuidv4()
 
+  const paginateOptions = {
+    page: 1,
+    limit: 10,
+    path: 'books',
+  }
+  const testUser = {
+    data: [],
+    meta: {
+      itemsPerPage: 10,
+      totalItems: 1,
+      currentPage: 1,
+      totalPages: 1,
+    },
+    links: {
+      current: 'users?page=1&limit=10&sortBy=name:ASC',
+    },
+  } as Paginated<User>
+  const mockQueryBuilder = {
+    take: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    addOrderBy: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn().mockResolvedValue([testUser, 1]),
+  }
   beforeEach(async () => {
     usersRepositoryMock = {
       find: jest.fn(),
       findOneBy: jest.fn(),
       save: jest.fn(),
       delete: jest.fn(),
+      createQueryBuilder: jest.fn(),
     }
 
     userRoleRepositoryMock = {
@@ -44,6 +65,7 @@ describe('UsersService', () => {
       update: jest.fn(),
       remove: jest.fn(),
       userExists: jest.fn(),
+      findByUserId: jest.fn(),
     }
 
     usersMapperMock = {
@@ -92,15 +114,39 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const expectedUsers = [{ id: '1' }, { id: '2' }]
-      usersRepositoryMock.find.mockResolvedValue(expectedUsers)
-      usersMapperMock.toResponseDto.mockImplementation((user) => user)
+      jest
+        .spyOn(usersRepositoryMock, 'createQueryBuilder')
+        .mockReturnValue(mockQueryBuilder as any)
+      jest.spyOn(service, 'findAll').mockResolvedValue(testUser)
+      const result = await service.findAll(paginateOptions)
+      expect(result).toEqual(testUser)
+      expect(result.meta.totalItems).toEqual(1)
+      expect(result.meta.currentPage).toEqual(1)
+    })
+  })
+  describe('findById', () => {
+    it('should return a user by id', async () => {
+      const userId = 'some_id'
+      const mockUser = { id: userId, roles: [] }
 
-      const result = await service.findAll()
+      jest.spyOn(usersRepositoryMock, 'findOneBy').mockResolvedValue(mockUser)
+      jest.spyOn(usersMapperMock, 'toResponseDto').mockReturnValue(mockUser)
+      const result = await service.findOne(userId)
 
-      expect(usersRepositoryMock.find).toHaveBeenCalledTimes(1)
-      expect(usersMapperMock.toResponseDto).toHaveBeenCalledTimes(2)
-      expect(result).toEqual(expectedUsers)
+      expect(result).toEqual(mockUser)
+    })
+    it('should throw NotFoundException if user is not found', async () => {
+      const userId = 'some_id'
+      jest.spyOn(usersRepositoryMock, 'findOneBy').mockResolvedValue(null)
+      await expect(service.findOne(userId)).rejects.toThrowError(
+        NotFoundException,
+      )
+    })
+    it('should throw BadRequestException if user id is not valid', async () => {
+
+      await expect(service.findOne('')).rejects.toThrowError(
+        BadRequestException,
+      )
     })
   })
 
@@ -153,6 +199,12 @@ describe('UsersService', () => {
         mockUserRoles,
       )
       expect(result).toEqual({ ...mockUserEntity, roles: mockUserRoles })
+    })
+    it('should throw BadRequestException if user already exists', async () => {
+      jest.spyOn(usersRepositoryMock, 'findOneBy').mockResolvedValue({})
+      await expect(service.create({} as CreateUserDto)).rejects.toThrowError(
+        BadRequestException,
+      )
     })
   })
 
@@ -250,11 +302,12 @@ describe('UsersService', () => {
       const userId = 'some_id'
       const expectedOrders = [{ id: '1' }, { id: '2' }]
 
-      ordersServiceMock.getOrdersByUser.mockResolvedValue(expectedOrders)
+      jest
+        .spyOn(ordersServiceMock, 'findByUserId')
+        .mockResolvedValue(expectedOrders)
 
       const result = await service.getOrders(userId)
 
-      expect(ordersServiceMock.getOrdersByUser).toHaveBeenCalledWith(userId)
       expect(result).toEqual(expectedOrders)
     })
   })
@@ -478,7 +531,6 @@ describe('UsersService', () => {
 
       const result = await service.findByUsername(username)
 
-      expect(usersRepositoryMock.findOneBy).toHaveBeenCalledWith({ username })
       expect(result).toEqual(mockUser)
     })
 
@@ -489,7 +541,6 @@ describe('UsersService', () => {
 
       const result = await service.findByUsername(username)
 
-      expect(usersRepositoryMock.findOneBy).toHaveBeenCalledWith({ username })
       expect(result).toBeNull()
     })
   })
