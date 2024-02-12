@@ -135,6 +135,9 @@ describe('BookMapper', () => {
       // Arrange
       const updateBookDto: UpdateBookDto = {
         image: 'updated-image.jpg',
+        author: 'test',
+        publisherId: 1,
+        name: 'Book Actualizado',
       }
 
       // Act
@@ -164,6 +167,8 @@ describe('BookMapper', () => {
       const updateBookDto: UpdateBookDto = {
         name: 'Book Actualizado',
         price: 15.99,
+        publisherId: 1,
+        author: 'test',
       }
 
       const category: Category = {

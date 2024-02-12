@@ -17,11 +17,13 @@ import { BooksNotificationsGateway } from '../../websockets/notifications/books-
 import { ResponseBookDto } from '../dto/response-book.dto'
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import { Publisher } from '../../publishers/entities/publisher.entity'
 
 describe('BooksService', () => {
   let service: BooksService
   let bookRepository: Repository<Book>
   let categoryRepository: Repository<Category>
+  let publisherRepository: Repository<Publisher>
   let storageService: StorageService
   let booksNotificationsGateway: BooksNotificationsGateway
   let cacheManager: Cache
@@ -123,6 +125,10 @@ describe('BooksService', () => {
           useClass: Repository,
         },
         {
+          provide: getRepositoryToken(Publisher),
+          useClass: Repository,
+        },
+        {
           provide: BookMapper,
           useValue: bookMapperMock,
         },
@@ -139,6 +145,9 @@ describe('BooksService', () => {
     bookRepository = module.get<Repository<Book>>(getRepositoryToken(Book))
     categoryRepository = module.get<Repository<Category>>(
       getRepositoryToken(Category),
+    )
+    publisherRepository = module.get<Repository<Publisher>>(
+      getRepositoryToken(Publisher),
     )
     storageService = module.get<StorageService>(StorageService)
     booksNotificationsGateway = module.get<BooksNotificationsGateway>(
@@ -277,6 +286,8 @@ describe('BooksService', () => {
         stock: 15,
         image: 'https://www.nuevo-ejemplo.com/favicon.ico',
         category: 'nueva category',
+        publisherId: 1,
+        author: 'Nuevo Autor',
       }
 
       jest.spyOn(service, 'findOne').mockResolvedValue(responseBookDto)
@@ -314,6 +325,8 @@ describe('BooksService', () => {
       const notValidId = null
       const updateBookDto: UpdateBookDto = {
         name: 'Nuevo Nombre',
+        author: 'Nuevo Autor',
+        publisherId: 1,
       }
 
       // Act & Assert
