@@ -1,0 +1,3180 @@
+{
+	"info": {
+		"_postman_id": "227b6afd-e827-4527-8b7c-75f23b534726",
+		"name": "📘 DAW BookStore - NEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11601885"
+	},
+	"item": [
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "CHANGE IMAGE empty",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}books/image/1",
+									"host": [
+										"{{url}}books"
+									],
+									"path": [
+										"image",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindById BadRequest",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}books/asd",
+									"host": [
+										"{{url}}books"
+									],
+									"path": [
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "9 Errors Post Book",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}books",
+									"host": [
+										"{{url}}books"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}books?limit=20&sortBy=name:ASC&page=0",
+							"host": [
+								"{{url}}books"
+							],
+							"query": [
+								{
+									"key": "publisher",
+									"value": "-mAdIReX",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "300",
+									"disabled": true
+								},
+								{
+									"key": "filter.price",
+									"value": "$btw:1,50",
+									"disabled": true
+								},
+								{
+									"key": "filter.name",
+									"value": "$ilike:libro",
+									"disabled": true
+								},
+								{
+									"key": "filter.name",
+									"value": "$eq: Ejemplo nombre",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sortBy",
+									"value": "name:ASC"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}books/1",
+							"host": [
+								"{{url}}books"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"Madirex\",\r\n    \"name\": \"libro-345asdsrdsdssds222\",\r\n    \"publisherId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"category\": \"test\",\r\n    \"description\": \"3\",\r\n    \"price\" : 23,\r\n    \"stock\" : 22\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}books",
+							"host": [
+								"{{url}}books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"publisherId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"category\": \"test\",\r\n    \"description\": \"3\",\r\n    \"price\" : 11.23,\r\n    \"author\" : \"Diver\",\r\n    \"stock\" : 32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}books/1",
+							"host": [
+								"{{url}}books"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books - Without Optional Data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"Madirex\",\r\n    \"name\": \"-34asd5asddfssddcsd\",\r\n    \"publisherId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}books",
+							"host": [
+								"{{url}}books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books - Without Optional Data Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"Madirex\",\r\n    \"name\": \"-34asd5asdsdsdfdgsd\",\r\n    \"publisherId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}books/1",
+							"host": [
+								"{{url}}books"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE IMAGE Books",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/linux.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}books/image/1",
+							"host": [
+								"{{url}}books"
+							],
+							"path": [
+								"image",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}books/1",
+							"host": [
+								"{{url}}books"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "FindById Not Valid ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/1asdasd",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"1asdasd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post Category Empty Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}categories",
+									"host": [
+										"{{url}}categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Category Bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}categories/asdad",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"asdad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Category Long ID number",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"                 Ejemplo nombre Editado4                   \"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}categories/109999999999999999999999999999999999999999999999999999999999",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"109999999999999999999999999999999999999999999999999999999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Category ID 0",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"                 Ejemplo nombre Editado4                   \"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}categories/0",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Category Bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/asdasd",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"asdasd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post Category > 255 characters",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123452\",\r\n    \"categoryType\": \"SERIES\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}categories",
+									"host": [
+										"{{url}}categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindById Long number",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/13333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"13333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindById is 0",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/0",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Category Long Number",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/1999999999999999999999999999999999999999999999999999999999999999999999",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"1999999999999999999999999999999999999999999999999999999999999999999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Category ID 0",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}categories/0",
+									"host": [
+										"{{url}}categories"
+									],
+									"path": [
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}categories?page=1&limit=20&sortBy=name:ASC&filter.isActive=$eq:true&filter.name=$ilike:ejemplo",
+							"host": [
+								"{{url}}categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sortBy",
+									"value": "name:ASC"
+								},
+								{
+									"key": "filter.isActive",
+									"value": "$eq:true"
+								},
+								{
+									"key": "filter.name",
+									"value": "$ilike:ejemplo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}categories/1",
+							"host": [
+								"{{url}}categories"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"             ejemplosd4df5             \",\r\n    \"categoryType\": \"SERIES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}categories",
+							"host": [
+								"{{url}}categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Category Full Edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"                 Ejemplo nombre Editado                   \",\r\n    \"categoryType\": \"OTHER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}categories/1",
+							"host": [
+								"{{url}}categories"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Category Partial Edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"                 Ejemplo nombre Editado4                   \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}categories/1",
+							"host": [
+								"{{url}}categories"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}categories/1",
+							"host": [
+								"{{url}}categories"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "SignIn Empty Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signin",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignIn - User Not Found",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"User\",\r\n    \"password\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signin",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - User Already Exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signup",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Email Already Exists Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"fg345ghghrth\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signup",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Invalid Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": -45764574574574,\r\n    \"surname\": -45764574574574,\r\n    \"name\": -45764574574574,\r\n    \"email\": -45764574574574,\r\n    \"password\": -45764574574574,\r\n    \"passwordRepeat\": -45764574574574\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signup",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Empty",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signup",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"Manolo54\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/signup",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SignIn User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"MaNolO54\",\r\n    \"password\": \"M43t435g5ga-A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/signin",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"AdmiN\",\r\n    \"password\": \"passsword123A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/signin",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Manolo54\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"M43t435g5ga-A\",\r\n    \"passwordRepeat\": \"M43t435g5ga-A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/signup",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "User FindById INVALID ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/dfgsdfdsfsdf",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"dfgsdfdsfsdf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME ORDERS BY ID - Invalid Id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/me/orders/sad",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"me",
+										"orders",
+										"sad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME create ORDER - Bad Price",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 2234.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"9c494cf1-dcd6-4524-b053-d813b494099c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/me/orders",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"me",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME update ORDER - Bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 23.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"9c494cf1-dcd6-4524-b053-d813b494099c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/me/orders/2",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"me",
+										"orders",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME delete ORDER - Bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/me/orders/asd",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"me",
+										"orders",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Bad Password and Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": 234,\r\n    \"username\": 234,\r\n    \"password\": 234,\r\n    \"surname\": 234,\r\n    \"email\": 234\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users",
+									"host": [
+										"{{url}}users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Bad Password and Email",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": 234,\r\n    \"username\": 234,\r\n    \"password\": 234,\r\n    \"surname\": 234,\r\n    \"email\": 234\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}users/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"host": [
+										"{{url}}users"
+									],
+									"path": [
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users?isDeleted=false&page=0&size=5&direction=asc&orderBy=username",
+							"host": [
+								"{{url}}users"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "Madirex",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "angel@madirex.com",
+									"disabled": true
+								},
+								{
+									"key": "isDeleted",
+									"value": "false"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "orderBy",
+									"value": "username"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User FindById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/ba37488c-1358-4b67-b962-6842d949407d",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"ba37488c-1358-4b67-b962-6842d949407d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME ORDERS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/orders",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME ORDERS BY ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/orders/65c8ed0f29d2f4b6c2d5b147",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"orders",
+								"65c8ed0f29d2f4b6c2d5b147"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME create ORDER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"0978f0e5-7ef9-4172-96c3-1339079721c2\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": 1,\r\n            \"price\": 11.23,\r\n            \"quantity\": 2,\r\n            \"total\": 23\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"543cc80d-00df-4dba-885e-cbccc5400acf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/orders",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME update ORDER",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"0978f0e5-7ef9-4172-96c3-1339079721c2\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": 1,\r\n            \"price\": 11.23,\r\n            \"quantity\": 2,\r\n            \"total\": 23\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"543cc80d-00df-4dba-885e-cbccc5400acf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/orders/65c8ed0f29d2f4b6c2d5b147",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"orders",
+								"65c8ed0f29d2f4b6c2d5b147"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME delete ORDER",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/orders/65c8ed0f29d2f4b6c2d5b147",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"orders",
+								"65c8ed0f29d2f4b6c2d5b147"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"holAs4--\",\r\n    \"username\": \"HolAs412345\",\r\n    \"password\": \"HolAs412345\",\r\n    \"surname\": \"holAs4--\",\r\n    \"email\": \"madsisdss92993@madirex.com\",\r\n    \"roles\": [\"USER\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users",
+							"host": [
+								"{{url}}users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"asd\",\r\n    \"username\": \"Admin\",\r\n    \"password\": -234234,\r\n    \"surname\": \"Land\",\r\n    \"email\": \"madirex2@madirex.com\",\r\n    \"isDeleted\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/me/profile",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}users/ba37488c-1358-4b67-b962-6842d949407d",
+							"host": [
+								"{{url}}users"
+							],
+							"path": [
+								"ba37488c-1358-4b67-b962-6842d949407d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Publisher",
+			"item": [
+				{
+					"name": "🔴Casos incorrectos",
+					"item": [
+						{
+							"name": "FindById",
+							"item": [
+								{
+									"name": "FindById BadRequest ID",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}publishers/null",
+											"host": [
+												"{{url}}publishers"
+											],
+											"path": [
+												"null"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Post",
+							"item": [
+								{
+									"name": "without data",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}publishers",
+											"host": [
+												"{{url}}publishers"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Put",
+							"item": [
+								{
+									"name": "without data",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}publishers/1",
+											"host": [
+												"{{url}}publishers"
+											],
+											"path": [
+												"1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad Request ID",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Ejemplo33\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}publishers/sdfdsfsf",
+											"host": [
+												"{{url}}publishers"
+											],
+											"path": [
+												"sdfdsfsf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Image",
+							"item": [
+								{
+									"name": "unsupported media type",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/C:/Users/madir/Pictures/Book Cart.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}publishers/image/2",
+											"host": [
+												"{{url}}publishers"
+											],
+											"path": [
+												"image",
+												"2"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "Bad Request ID",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}publishers/null",
+											"host": [
+												"{{url}}publishers"
+											],
+											"path": [
+												"null"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Get All",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}publishers?page=0&limit=2&sortBy=name:ASC",
+							"host": [
+								"{{url}}publishers"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sortBy",
+									"value": "name:ASC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher FindById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}publishers/1",
+							"host": [
+								"{{url}}publishers"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}publishers",
+							"host": [
+								"{{url}}publishers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo2\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}publishers/1",
+							"host": [
+								"{{url}}publishers"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE IMAGE PUBLISHER",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/linux.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}publishers/image/1",
+							"host": [
+								"{{url}}publishers"
+							],
+							"path": [
+								"image",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Publisher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}publishers/1",
+							"host": [
+								"{{url}}publishers"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "update - bad location CP",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"address\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"4daeb6b7-e438-47ca-ac84-167fdc4adf65"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update - bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"location\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}shops/0",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create - bad location CP",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop\",\r\n    \"location\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}shops",
+									"host": [
+										"{{url}}shops"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete - bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/58b4b04d-6e9c-42ba-b239-3e86837b7c99",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"58b4b04d-6e9c-42ba-b239-3e86837b7c99"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Book - Bad Shop ID",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/4/books/1",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"4",
+										"books",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Book - Bad Shop ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/2/books/1",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"2",
+										"books",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Client - Bad Client ID",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/c482c4d8-e083-4496-88fe-06b461d7d17b/clients/asd",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"c482c4d8-e083-4496-88fe-06b461d7d17b",
+										"clients",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Book - Bad Book ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/c482c4d8-e083-4496-88fe-06b461d7d17b/books/dfgd",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"c482c4d8-e083-4496-88fe-06b461d7d17b",
+										"books",
+										"dfgd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Client - Bad Shop ID",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/2/clients/83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"2",
+										"clients",
+										"83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Client - Bad Shop ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/2/clients/83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"2",
+										"clients",
+										"83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Book - Bad Book ID",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65/books/fdg",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+										"books",
+										"fdg"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Client - Bad Client ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}shops/c482c4d8-e083-4496-88fe-06b461d7d17b/clients/sdf",
+									"host": [
+										"{{url}}shops"
+									],
+									"path": [
+										"c482c4d8-e083-4496-88fe-06b461d7d17b",
+										"clients",
+										"sdf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getall",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops?page=0&size=5&direction=asc&orderBy=id",
+							"host": [
+								"{{url}}shops"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "location",
+									"value": "afaf",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "dfsf",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "orderBy",
+									"value": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/2bd2102a-a460-4ab0-8ba9-f7d6dd32788a",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"2bd2102a-a460-4ab0-8ba9-f7d6dd32788a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"location\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}shops/85b52f6d-1e8f-4536-8f64-e1c4dc907668",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"85b52f6d-1e8f-4536-8f64-e1c4dc907668"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Manolo Shop223\",\r\n    \"address\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}shops",
+							"host": [
+								"{{url}}shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/2bd2102a-a460-4ab0-8ba9-f7d6dd32788a",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"2bd2102a-a460-4ab0-8ba9-f7d6dd32788a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Book",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65/books/1",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65/books/1",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Client",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65/clients/0978f0e5-7ef9-4172-96c3-1339079721c2",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+								"clients",
+								"0978f0e5-7ef9-4172-96c3-1339079721c2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Client",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}shops/4daeb6b7-e438-47ca-ac84-167fdc4adf65/clients/0978f0e5-7ef9-4172-96c3-1339079721c2",
+							"host": [
+								"{{url}}shops"
+							],
+							"path": [
+								"4daeb6b7-e438-47ca-ac84-167fdc4adf65",
+								"clients",
+								"0978f0e5-7ef9-4172-96c3-1339079721c2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "getClient Bad ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}client/5",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createClient Empty",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n    \"address\": {\r\n\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}client",
+									"host": [
+										"{{url}}client"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createClient Bad phone & email & addressCP",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": -5654,\r\n    \"surname\": -345,\r\n    \"email\": \"sdf\",\r\n    \"phone\": \"sdffsd\",\r\n    \"address\": {\r\n        \"postalCode\": \"sdfsdf\",\r\n        \"city\": 345,\r\n        \"number\": 345,\r\n        \"street\": 345,\r\n        \"province\": 345,\r\n        \"country\": 345\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}client",
+									"host": [
+										"{{url}}client"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateClient Empty",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address\": {\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}client/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateClient Bad phone & email & addressCP",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": -5654,\r\n    \"surname\": -345,\r\n    \"email\": \"sdf\",\r\n    \"phone\": \"sdffsd\",\r\n    \"address\": {\r\n        \"postalCode\": \"sdfsdf\",\r\n        \"city\": 345,\r\n        \"number\": 345,\r\n        \"street\": 345,\r\n        \"province\": 345,\r\n        \"country\": 345\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}client/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteClient bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}client/3",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getClientByEmail mail not exists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}client/email/-657",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"email",
+										"-657"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateImage BadRequest",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/madir/Pictures/Iconos/foldergreengames_93035.ico"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}client/image/6a85a511-506e-4269-8b24-c87fe5e3eb44",
+									"host": [
+										"{{url}}client"
+									],
+									"path": [
+										"image",
+										"6a85a511-506e-4269-8b24-c87fe5e3eb44"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getAllClients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields - status and msg\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('status');\r",
+									"    pm.expect(responseData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status is a non-zero integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.status).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.status).to.not.equal(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.msg).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify sortBy parameter is included in the response and has the expected value\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.sortBy).to.exist.and.to.equal(\"pepe\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}client?page=0&limit=2&sortBy=name:ASC",
+							"host": [
+								"{{url}}client"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "pepe",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "ju",
+									"disabled": true
+								},
+								{
+									"key": "surname",
+									"value": "peRe",
+									"disabled": true
+								},
+								{
+									"key": "phone",
+									"value": "1234",
+									"disabled": true
+								},
+								{
+									"key": "address",
+									"value": "Calle fAlsa 3",
+									"disabled": true
+								},
+								{
+									"key": "pepe",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "sortBy",
+									"value": "name:ASC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}client/6a85a511-506e-4269-8b24-c87fe5e3eb44",
+							"host": [
+								"{{url}}client"
+							],
+							"path": [
+								"6a85a511-506e-4269-8b24-c87fe5e3eb44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createClient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Daniel yp\",\r\n    \"surname\": \"ñdskfñsd\",\r\n    \"email\": \"test@madirex.com\",\r\n    \"phone\": \"654334556\",\r\n    \"address\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}client",
+							"host": [
+								"{{url}}client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateClient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Daniel yp\",\r\n    \"email\": \"test2@madirex.com\",\r\n    \"address\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}client/6a85a511-506e-4269-8b24-c87fe5e3eb44",
+							"host": [
+								"{{url}}client"
+							],
+							"path": [
+								"6a85a511-506e-4269-8b24-c87fe5e3eb44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteClient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}client/6a85a511-506e-4269-8b24-c87fe5e3eb44",
+							"host": [
+								"{{url}}client"
+							],
+							"path": [
+								"6a85a511-506e-4269-8b24-c87fe5e3eb44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClientByEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}client/email/test@madirex.com",
+							"host": [
+								"{{url}}client"
+							],
+							"path": [
+								"email",
+								"test@madirex.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateImage",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/linux.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}client/image/6a85a511-506e-4269-8b24-c87fe5e3eb44",
+							"host": [
+								"{{url}}client"
+							],
+							"path": [
+								"image",
+								"6a85a511-506e-4269-8b24-c87fe5e3eb44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "Sin elementos para procesar",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n    ],\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Errores nulos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Datos del cliente nulos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \r\n        }\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\",\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto no tiene precio válido o no coincide",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\"\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"9882a6d0-0d85-41c4-a464-219418174edc\"\r\n        }\r\n    ],\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Email no válido y country y province caracteres",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": 34,\r\n            \"province\": 32,\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"34\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"01e71601-e3fe-4ca9-b151-6ff94c3fe8e3\",\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\",\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders",
+									"host": [
+										"{{url}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Empty values",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"address\":{\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders/655a54c83f761d101f941f4e",
+									"host": [
+										"{{url}}orders"
+									],
+									"path": [
+										"655a54c83f761d101f941f4e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ID no válida",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}orders/655a59d28d33633b5d2be7c8",
+									"host": [
+										"{{url}}orders"
+									],
+									"path": [
+										"655a59d28d33633b5d2be7c8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Orders by user INVALID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}orders/user/2",
+									"host": [
+										"{{url}}orders"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}orders?page=0&size=5&sortBy=id&direction=desc",
+							"host": [
+								"{{url}}orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "id"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}orders/65c8b7735c5d44e554f7563a",
+							"host": [
+								"{{url}}orders"
+							],
+							"path": [
+								"65c8b7735c5d44e554f7563a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}orders/user/ba37488c-1358-4b67-b962-6842d949407d",
+							"host": [
+								"{{url}}orders"
+							],
+							"path": [
+								"user",
+								"ba37488c-1358-4b67-b962-6842d949407d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"0978f0e5-7ef9-4172-96c3-1339079721c2\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": 1,\r\n            \"price\": 11.23,\r\n            \"quantity\": 2,\r\n            \"total\": 23\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}orders",
+							"host": [
+								"{{url}}orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"0978f0e5-7ef9-4172-96c3-1339079721c2\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": 1,\r\n            \"price\": 11.23,\r\n            \"quantity\": 3,\r\n            \"total\": 23\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"ba37488c-1358-4b67-b962-6842d949407d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}orders/65c8b7735c5d44e554f7563a",
+							"host": [
+								"{{url}}orders"
+							],
+							"path": [
+								"65c8b7735c5d44e554f7563a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}orders/65c8b7735c5d44e554f7563a",
+							"host": [
+								"{{url}}orders"
+							],
+							"path": [
+								"65c8b7735c5d44e554f7563a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU0M2NjODBkLTAwZGYtNGRiYS04ODVlLWNiY2NjNTQwMGFjZiIsImlhdCI6MTcwNzY5NDA2MCwiZXhwIjoxNzA3Njk3NjYwfQ.l3JtvINpKu2KKZPKC7TDAfTlq3MHFl0UrE_AODowFcKAc_-8Xy4h2mrTSG7OAQUiTJL44UwBBkee9XS86d0mBw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:3000/v1/"
+		}
+	]
+}

@@ -3,6 +3,63 @@
   <img src="https://i.imgur.com/Om8sJgU.jpeg?maxwidth=500"/>
 </p>
 
+## Configuración
+Hay que crear un archivo .env en la raíz del proyecto con las siguientes variables de entorno:
+```API_VERSION=v1
+API_VERSION=v1
+API_PORT=3000
+API_HTTPS=true
+NODE_ENV=dev
+
+# Postgres
+POSTGRES_HOST=localhost
+DATABASE_USER=admin
+DATABASE_PASSWORD=password123
+POSTGRES_DATABASE=BOOKSTORE_DB
+POSTGRES_PORT=5432
+
+# Mongo
+MONGO_HOST=localhost
+MONGO_DATABASE=shop
+MONGO_PORT=27017
+
+# Cert
+SSL_KEY=./cert/keystore.p12
+SSL_CERT=./cert/cert.pem
+
+# JWT
+JWT_SECRET=secret_wepogu093jprgmrekl_34piu80gehriotg4
+JWT_EXPIRATION_TIME=3600
+```
+
+Para el archivo de producción, se crea un archivo .env.prod en la raíz del proyecto con las siguientes variables de entorno:
+```API_VERSION=v1
+API_PORT=3000
+API_HTTPS=true
+NODE_ENV=dev
+
+# Postgres
+POSTGRES_HOST=postgres-db
+DATABASE_USER=admin
+DATABASE_PASSWORD=password123
+POSTGRES_DATABASE=BOOKSTORE_DB
+POSTGRES_PORT=5432
+
+# Mongo
+MONGO_HOST=mongo-db
+MONGO_DATABASE=shop
+MONGO_PORT=27017
+
+# Cert
+SSL_KEY=./cert/keystore.p12
+SSL_CERT=./cert/cert.pem
+
+# JWT
+JWT_SECRET=secret_wepogu093jprgmrekl_34piu80gehriotg4
+JWT_EXPIRATION_TIME=3600
+```
+
+
 ## Arquitectura
 <p align="center">
   <img src="https://i.imgur.com/4r1PwDf_d.webp?maxwidth=1000"/>
@@ -23,17 +80,15 @@
 
 ## Descripción
 
-Bienvenido a la API REST de NULLERS BOOKS, una tienda de libros en línea que te permite realizar diversas operaciones, como consultar libros, gestionar usuarios, administrar tiendas y realizar pedidos. Nuestra API está diseñada para ser segura, eficiente y escalable, proporcionando una interfaz robusta para interactuar con la plataforma de comercio de libros.
+Bienvenido a la API REST de NULLERS BOOKS, una tienda de libros en línea que te permite realizar diversas operaciones, como consultar libros, gestionar usuarios, administrar tiendas y realizar orders. Nuestra API está diseñada para ser segura, eficiente y escalable, proporcionando una interfaz robusta para interactuar con la plataforma de comercio de libros.
 
 ### Estructura del Proyecto
 
 - **Controllers:** Manejan las solicitudes HTTP y devuelven las respuestas correspondientes.
-- **Exceptions:** Define excepciones específicas utilizadas en la aplicación.
 - **Models:** Define los objetos utilizados en la aplicación.
 - **Repositories:** Realiza operaciones con la base de datos.
 - **Services:** Realiza operaciones necesarias para que el controlador pueda devolver la respuesta.
 - **Utils:** Define las clases útiles que se utilizan en la aplicación.
-- **Main:** El programa que ejecutará la aplicación.
 
 ## Infraestructura
 
@@ -47,31 +102,25 @@ Un Libro tiene asignada una categoría y una editorial. Las editoriales tienen d
 
 El libro cuenta con un stock y un precio del libro, así como cada uno de los elementos que componen al libro: nombre, autor, descripción…
 
-**Borrado lógico:**
-- En book empleando active.
-- En category empleando isActive.
-- En publisher empleando active.
-- En order empleando isDeleted.
-
 ## Elección de Tecnologías para el Modelo de Datos
 
 ### Modelo relacional:
 
-Hemos utilizado un modelo relacional para los pedidos y líneas de pedido.
+Hemos utilizado un modelo relacional para los orders y líneas de order.
 
 ### SQL:
 
 Para el resto de entidades, hemos utilizado SQL.
 
-La elección de utilizar un modelo relacional para los pedidos y líneas de pedido, y SQL para el resto de entidades, se basa en consideraciones específicas relacionadas con la estructura y las operaciones previstas en el sistema.
+La elección de utilizar un modelo relacional para los orders y líneas de order, y SQL para el resto de entidades, se basa en consideraciones específicas relacionadas con la estructura y las operaciones previstas en el sistema.
 
-### Modelo Relacional para Pedidos y Líneas de Pedido:
+### Modelo Relacional para Orders y Líneas de OrderSchema:
 
 **Relaciones Complejas:**
-El modelo relacional es especialmente adecuado cuando existen relaciones complejas entre las entidades. En el caso de los pedidos y líneas de pedido, donde se pueden tener múltiples productos asociados a un solo pedido, el modelo relacional proporciona una representación clara y eficiente de estas relaciones.
+El modelo relacional es especialmente adecuado cuando existen relaciones complejas entre las entidades. En el caso de los orders y líneas de order, donde se pueden tener múltiples libros asociados a un solo order, el modelo relacional proporciona una representación clara y eficiente de estas relaciones.
 
 **Consistencia y Normalización:**
-La normalización inherente al modelo relacional ayuda a mantener la consistencia y la integridad de los datos. Al gestionar pedidos, donde es crucial mantener la coherencia de la información, la normalización contribuye a evitar redundancias y posibles incongruencias.
+La normalización inherente al modelo relacional ayuda a mantener la consistencia y la integridad de los datos. Al gestionar orders, donde es crucial mantener la coherencia de la información, la normalización contribuye a evitar redundancias y posibles incongruencias.
 
 ### SQL para el Resto de Entidades:
 
@@ -83,90 +132,59 @@ SQL proporciona un lenguaje poderoso para la consulta y manipulación de datos. 
 
 ## Dependencias
 
-- **Spring Boot Starter Data JPA:** Facilita el acceso a datos mediante Java Persistence API (JPA), permitiendo una integración eficiente con bases de datos relacionales en aplicaciones Spring.
-- **Spring Boot Starter Web:** Proporciona configuraciones predeterminadas para el desarrollo de aplicaciones web con Spring MVC. Incluye todo lo necesario para manejar solicitudes HTTP y construir aplicaciones web.
-- **Spring Boot Starter Cache:** Integra la capa de caché en la aplicación, lo que permite mejorar el rendimiento almacenando en caché resultados de operaciones costosas, reduciendo así la carga en recursos.
-- **Spring Boot Starter Validation:** Proporciona funcionalidades para la validación de datos en la aplicación, asegurando la integridad y consistencia de los datos ingresados.
-- **Spring Boot Starter Test:** Incluye dependencias necesarias para realizar pruebas en aplicaciones Spring Boot, facilitando la escritura y ejecución de pruebas unitarias y de integración.
-- **Jackson Dataformat XML:** Habilita el manejo de datos en formato XML mediante la biblioteca Jackson, permitiendo la serialización y deserialización de objetos Java en formato XML.
-- **Spring Boot Starter Websocket:** Proporciona soporte para WebSocket en aplicaciones Spring Boot, permitiendo la comunicación bidireccional entre el cliente y el servidor en tiempo real.
-- **Jackson Datatype JSR310:** Extiende la biblioteca Jackson para proporcionar soporte adicional para tipos de datos de la API de fecha y hora de Java (JSR-310), como LocalDate y LocalDateTime.
-- **Spring Boot Starter Security:** Facilita la integración de la seguridad en la aplicación, permitiendo la configuración de autenticación y autorización.
-- **Spring Security Test:** Proporciona herramientas y utilidades para realizar pruebas de seguridad en aplicaciones Spring.
-- **Java JWT (JSON Web Tokens):** Ofrece soporte para la creación y validación de tokens JWT, utilizados comúnmente en la autenticación y autorización de aplicaciones.
-- **SpringDoc OpenAPI Starter Webmvc UI:** Integra la generación de documentación OpenAPI (anteriormente Swagger) para la API de la aplicación, facilitando la comprensión y prueba de la API.
-- **Spring Boot Starter Data MongoDB:** Facilita el acceso a datos en bases de datos MongoDB en aplicaciones Spring Boot.
-- **de.flapdoodle.embed.mongo:** Proporciona herramientas para embeber una instancia de MongoDB durante las pruebas, eliminando la necesidad de una instancia externa para pruebas de integración.
-- **H2 Database (Runtime):** Incorpora la base de datos H2 en tiempo de ejecución, una base de datos en memoria útil para desarrollo y pruebas.
-- **Lombok (Compile-Only y Annotation Processor):** Simplifica la creación de clases Java mediante anotaciones, reduciendo la necesidad de escribir código boilerplate y mejorando la legibilidad del código.
+- **@nestjs/cache-manager:** Proporciona una capa de caché para mejorar el rendimiento de la aplicación al almacenar en caché resultados de operaciones costosas.
 
-## Lista de Endpoints
+- **@nestjs/common:** Proporciona funcionalidades comunes para aplicaciones NestJS, como la inyección de dependencias y la creación de controladores.
 
-### Shops:
+- **@nestjs/config:** Permite la gestión de la configuración de la aplicación de forma sencilla y flexible.
 
-- **GET /api/shops/{id}:** Obtiene una tienda por su ID.
-- **PUT /api/shops/{id}:** Actualiza una tienda existente.
-- **DELETE /api/shops/{id}:** Elimina una tienda por su ID.
-- **GET /api/shops:** Obtiene todas las tiendas.
-- **POST /api/shops:** Crea una nueva tienda.
-- **DELETE /api/shops/{id}/clients/{clientId}:** Elimina un cliente de una tienda.
-- **PATCH /api/shops/{id}/clients/{clientId}:** Añade un cliente a una tienda.
-- **DELETE /api/shops/{id}/books/{bookId}:** Elimina un libro de una tienda.
-- **PATCH /api/shops/{id}/books/{bookId}:** Añade un libro a una tienda.
+- **@nestjs/core:** Proporciona la base fundamental para la ejecución de aplicaciones NestJS.
 
-### Publishers:
+- **@nestjs/jwt:** Ofrece funcionalidades para la generación y validación de tokens JWT para la autenticación y autorización de usuarios.
 
-- **GET /api/publishers/{id}:** Obtiene una editorial dado un ID.
-- **PUT /api/publishers/{id}:** Actualiza una editorial.
-- **DELETE /api/publishers/{id}:** Elimina una editorial.
-- **GET /api/publishers:** Obtiene todas las editoriales.
-- **POST /api/publishers:** Crea una editorial.
-- **PATCH /api/publishers/image/{id}:** Actualiza la imagen de una editorial.
+- **@nestjs/mapped-types:** Proporciona herramientas para la manipulación y transformación de tipos de datos en aplicaciones NestJS.
 
-### Orders:
+- **@nestjs/mongoose:** Facilita la integración de MongoDB con NestJS para el acceso a datos utilizando Mongoose.
 
-- **GET /api/orders/{id}:** Obtiene un pedido dado un ID.
-- **PUT /api/orders/{id}:** Actualiza un pedido.
-- **DELETE /api/orders/{id}:** Elimina un pedido.
-- **PUT /api/orders/delete/{id}:** Elimina un pedido de manera simulada.
-- **GET /api/orders:** Obtiene todos los pedidos.
-- **POST /api/orders:** Crea un pedido.
-- **GET /api/orders/user/{id}:** Obtiene un pedido dado el ID de un usuario.
-- **GET /api/orders/shop/{id}:** Obtiene un pedido dado el ID de una tienda.
-- **GET /api/orders/client/{id}:** Obtiene un pedido dado el ID de un cliente.
+- **@nestjs/passport:** Ofrece integración con Passport para la autenticación de usuarios en aplicaciones NestJS.
 
-### Clients:
+- **@nestjs/platform-express:** Proporciona integración con Express, permitiendo la creación de servidores HTTP robustos.
 
-- **GET /api/clients/{id}:** Obtiene un cliente dado un ID.
-- **PUT /api/clients/{id}:** Actualiza un cliente.
-- **DELETE /api/clients/{id}:** Elimina un cliente.
-- **GET /api/clients:** Obtiene todos los clientes.
-- **POST /api/clients:** Crea un cliente.
-- **PATCH /api/clients/{id}/image:** Actualiza la imagen de un cliente.
-- **GET /api/clients/email/{email}:** Obtiene un cliente dado un email.
+- **@nestjs/platform-socket.io:** Ofrece soporte para la comunicación en tiempo real a través de WebSockets utilizando Socket.IO.
 
-### Categories:
+- **@nestjs/swagger:** Permite la generación automática de documentación OpenAPI (anteriormente Swagger) para la API de la aplicación.
 
-- **GET /api/categories/{id}:** Busca una categoría por ID.
-- **PUT /api/categories/{id}:** Actualiza una categoría.
-- **DELETE /api/categories/{id}:** Borra una categoría.
-- **GET /api/categories:** Obtiene todas las categorías.
-- **POST /api/categories:** Crea una categoría.
+- **@nestjs/typeorm:** Facilita la integración de TypeORM con NestJS para el acceso a bases de datos relacionales.
 
-### Books:
+- **@nestjs/websockets:** Proporciona funcionalidades para la implementación de WebSockets en aplicaciones NestJS.
 
-- **GET /api/books/{id}:** Busca un libro dado su ID.
-- **PUT /api/books/{id}:** Actualiza un libro.
-- **DELETE /api/books/{id}:** Borra un libro.
-- **PATCH /api/books/{id}:** Actualiza un libro parcialmente.
-- **GET /api/books:** Obtiene todos los libros.
-- **POST /api/books:** Crea un libro.
-- **PATCH /api/books/image/{id}:** Actualiza la imagen de un libro.
+- **@types/multer:** Proporciona definiciones de tipos para la biblioteca Multer, utilizada para el manejo de archivos en aplicaciones Node.js.
 
-### Authentication:
+- **bcryptjs:** Ofrece funcionalidades para el cifrado de contraseñas utilizando el algoritmo bcrypt.
 
-- **POST /api/auth/signup:** Crea una cuenta.
-- **POST /api/auth/signin:** Inicia sesión.
+- **cache-manager:** Proporciona una capa de caché para Node.js que soporta múltiples almacenes de caché.
+
+- **chalk:** Permite la coloración de texto en la consola para una mejor legibilidad de los mensajes.
+
+- **class-transformer y class-validator:** Facilitan la validación y transformación de objetos en aplicaciones NestJS.
+
+- **cross-env:** Proporciona una forma de establecer variables de entorno de forma consistente en diferentes plataformas.
+
+- **mongoose y mongoose-paginate-v2:** Ofrecen herramientas para trabajar con MongoDB de forma sencilla y eficiente, incluyendo paginación de resultados.
+
+- **nestjs-paginate:** Proporciona funcionalidades de paginación para aplicaciones NestJS.
+
+- **nestjs-pino:** Ofrece integración con Pino para el registro de eventos y seguimiento en aplicaciones NestJS.
+
+- **passport y passport-jwt:** Proporcionan soporte para la autenticación basada en tokens JWT utilizando Passport.
+
+- **pg:** Cliente PostgreSQL para Node.js.
+
+- **reflect-metadata:** Proporciona una API para el acceso a los metadatos de los objetos en tiempo de ejecución.
+
+- **rxjs:** Biblioteca reactiva para JavaScript.
+
+- **typeorm:** ORM para Node.js que soporta múltiples bases de datos relacionales.
 
 ## Autores
 - [Madirex](https://github.com/Madirex/)
