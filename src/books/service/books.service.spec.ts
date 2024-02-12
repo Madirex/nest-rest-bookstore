@@ -300,6 +300,9 @@ describe('BooksService', () => {
       jest.spyOn(bookRepository, 'findOne').mockResolvedValue(mockBook)
       jest.spyOn(service, 'getByName').mockResolvedValue(null)
       jest.spyOn(service, 'getCategoryByName').mockResolvedValue(null)
+      jest
+        .spyOn(service, 'getPublisherByName')
+        .mockResolvedValue(new Publisher())
       jest.spyOn(bookMapperMock, 'mapUpdateToEntity').mockReturnValue(mockBook)
       jest.spyOn(bookRepository, 'save').mockResolvedValue(mockBook)
 
@@ -319,6 +322,7 @@ describe('BooksService', () => {
         updateBookDto,
         mockBook,
         null,
+        new Publisher(),
       )
       expect(bookRepository.save).toHaveBeenCalledWith({
         ...mockBook,

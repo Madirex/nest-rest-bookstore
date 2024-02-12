@@ -8,6 +8,7 @@ import { CreateBookDto } from '../dto/create-book.dto'
 import { Book } from '../entities/book.entity'
 import { UpdateBookDto } from '../dto/update-book.dto'
 import { Publisher } from '../../publishers/entities/publisher.entity'
+import { ResponseBookDto } from '../dto/response-book.dto'
 
 describe('BookMapper', () => {
   let bookMapper: BookMapper
@@ -193,6 +194,18 @@ describe('BookMapper', () => {
       expect(actualBookEntity.name).toEqual(updateBookDto.name.trim())
       expect(actualBookEntity.price).toEqual(updateBookDto.price)
       expect(actualBookEntity.category).toEqual(category)
+    })
+  })
+
+  describe('mapEntityToResponseDto', () => {
+    it('el mapeo de UpdateBookDto a entidad Book se debe realizar', () => {
+      // Act
+      const actualBookEntity: ResponseBookDto =
+        bookMapper.mapEntityToResponseDto(existingBook)
+
+      // Assert
+      expect(actualBookEntity.name).toEqual(existingBook.name.trim())
+      expect(actualBookEntity.price).toEqual(existingBook.price)
     })
   })
 })
