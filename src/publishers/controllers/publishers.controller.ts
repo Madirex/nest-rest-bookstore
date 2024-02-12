@@ -5,7 +5,8 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param, ParseIntPipe,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -87,6 +88,7 @@ export class PublishersController {
   @Roles('USER', 'ADMIN')
   @Get()
   findAll(@Paginate() query: PaginateQuery) {
+    console.log('buscando editoriales')
     return this.publisherService.findAll(query)
   }
 
@@ -113,6 +115,7 @@ export class PublishersController {
   @Roles('ADMIN')
   @Post()
   create(@Body() createPublisherDto: CreatePublisherDto) {
+    console.log('creando editorial')
     return this.publisherService.create(createPublisherDto)
   }
 
@@ -138,6 +141,7 @@ export class PublishersController {
   @HttpCode(200)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
+    console.log('buscando editorial')
     return this.publisherService.findOne(+id)
   }
 
@@ -167,6 +171,7 @@ export class PublishersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePublisherDto: UpdatePublisherDto,
   ) {
+    console.log('actualizando editorial')
     return this.publisherService.update(id, updatePublisherDto)
   }
 
@@ -192,6 +197,7 @@ export class PublishersController {
   @HttpCode(204)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
+    console.log('eliminando editorial')
     return this.publisherService.remove(+id)
   }
 
@@ -241,6 +247,7 @@ export class PublishersController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
   ) {
+    console.log('actualizando imagen de editorial')
     const allowedMimes = ['image/jpeg', 'image/png']
     const maxFileSizeInBytes = 1024 * 1024 // 1 megabyte
     if (file === undefined) throw new BadRequestException('Fichero no enviado')
@@ -258,13 +265,13 @@ export class PublishersController {
   }
 
   @ApiResponse({
-      status: 200,
-      description: 'Editorial actualizada',
+    status: 200,
+    description: 'Editorial actualizada',
   })
   @ApiParam({
-      name: 'id',
-      description: 'Identificador de la editorial',
-      type: String,
+    name: 'id',
+    description: 'Identificador de la editorial',
+    type: String,
   })
   @ApiParam({
     name: 'bookId',
@@ -272,48 +279,50 @@ export class PublishersController {
     type: String,
   })
   @ApiNotFoundResponse({
-      description: 'Editorial no encontrada',
+    description: 'Editorial no encontrada',
   })
   @ApiBadRequestResponse({
-      description: 'El id de la editorial no es válido',
+    description: 'El id de la editorial no es válido',
   })
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
-  @Roles( 'ADMIN')
+  @Roles('ADMIN')
   @Patch(':id/books/:bookId')
   async addBookToPublisher(
     @Param('id') id: number,
     @Param('bookId', ParseIntPipe) bookId: number,
   ) {
+    console.log('añadiendo libro a editorial')
     return this.publisherService.addBookToPublisher(id, bookId)
   }
 
   @ApiResponse({
-      status: 200,
-      description: 'Editorial actualizada',
+    status: 200,
+    description: 'Editorial actualizada',
   })
   @ApiParam({
-      name: 'id',
-      description: 'Identificador de la editorial',
-      type: String,
+    name: 'id',
+    description: 'Identificador de la editorial',
+    type: String,
   })
   @ApiParam({
-      name: 'bookId',
-      description: 'Identificador del libro',
-      type: String,
+    name: 'bookId',
+    description: 'Identificador del libro',
+    type: String,
   })
   @ApiNotFoundResponse({
-      description: 'Editorial no encontrada',
+    description: 'Editorial no encontrada',
   })
   @ApiBadRequestResponse({
-      description: 'El id de la editorial no es válido',
+    description: 'El id de la editorial no es válido',
   })
   @UseGuards(JwtAuthGuard, RolesAuthGuard)
-  @Roles( 'ADMIN')
+  @Roles('ADMIN')
   @Patch(':id/books/remove/:bookId')
   async removeBookFromPublisher(
-      @Param('id') id: number,
-      @Param('bookId', ParseIntPipe) bookId: number,
+    @Param('id') id: number,
+    @Param('bookId', ParseIntPipe) bookId: number,
   ) {
-      return this.publisherService.removeBookFromPublisher(id, bookId)
+    console.log('eliminando libro de editorial')
+    return this.publisherService.removeBookFromPublisher(id, bookId)
   }
 }
