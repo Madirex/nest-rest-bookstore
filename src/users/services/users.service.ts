@@ -1,4 +1,11 @@
-import { BadRequestException, ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ILike, Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
@@ -28,7 +35,7 @@ export class UsersService {
    * @param ordersService Servicio de orders
    * @param usersMapper Mapeador de usuarios
    * @param bcryptService Servicio de encriptación
-   * @param cacheManager
+   * @param cacheManager Manager del Caché
    */
   constructor(
     @InjectRepository(User)
@@ -38,8 +45,7 @@ export class UsersService {
     private readonly ordersService: OrdersService,
     private readonly usersMapper: UsersMapper,
     private readonly bcryptService: BcryptService,
-  ) {
-  }
+  ) {}
 
   /**
    * @description Devuelve todos los usuarios
