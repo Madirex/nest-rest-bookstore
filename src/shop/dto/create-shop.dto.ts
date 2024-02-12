@@ -4,7 +4,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator'
-import { Address } from 'src/common/address.entity'
+import { Address } from '../../common/address.entity'
 import { ApiProperty } from '@nestjs/swagger'
 
 /**
