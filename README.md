@@ -62,7 +62,7 @@ JWT_EXPIRATION_TIME=3600
 
 ## Arquitectura
 <p align="center">
-  <img src="https://i.imgur.com/4r1PwDf_d.webp?maxwidth=1000"/>
+  <img src="https://i.imgur.com/65QkI8d.png"/>
 </p>
 
 ## Diagrama UML
