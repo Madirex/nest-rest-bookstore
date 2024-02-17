@@ -1,6 +1,6 @@
 # Rest-BookStore
 <p align="center">
-  <img src="https://i.imgur.com/L8JoB88.png" width="300px"/>
+  <img src="https://i.imgur.com/L8JoB88.png" width="400px"/>
 </p>
 
 ## Configuración
